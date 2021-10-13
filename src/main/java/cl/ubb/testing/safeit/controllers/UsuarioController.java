@@ -53,6 +53,7 @@ public class UsuarioController {
 		Usuario usuarioAux;         
 		try {
 			Usuario updateUsuario = usuarioService.getById(id);
+			usuario.setidUsuario(id);
 			usuarioService.saveUsuario(usuario);
 		} catch (Exception e) {             
 			e.printStackTrace(); 
