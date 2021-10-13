@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 import cl.ubb.testing.safeit.models.Usuario;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
+public interface UsuarioRepository extends JpaRepository<Usuario, Integer>, CustomUsuarioRepository<Usuario>{
 
-	List<Usuario> findAll();
-	
 }

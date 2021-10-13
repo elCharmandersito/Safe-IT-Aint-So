@@ -1,6 +1,7 @@
 package cl.ubb.testing.safeit.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class UsuarioServiceImplementation implements UsuarioService {
 	UsuarioRepository repo;
 
 	@Override
-	public void createUsuario(Usuario usuario) {
+	public void saveUsuario(Usuario usuario) {
 		repo.save(usuario);
 	}
 
@@ -22,6 +23,18 @@ public class UsuarioServiceImplementation implements UsuarioService {
 	public List<Usuario> getAll() {
 		return repo.findAll();
 	}
+
+
+	@Override
+	public Usuario getById(int id) {
+		return repo.getById(id);
+	}
+	
+	public List<Usuario> getApellido(String apellido) {
+		return repo.findByApellidoPaterno(apellido);
+		
+	}
+	
 	
 	
 
