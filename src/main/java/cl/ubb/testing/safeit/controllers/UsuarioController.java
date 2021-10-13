@@ -1,7 +1,6 @@
 package cl.ubb.testing.safeit.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,21 +32,21 @@ public class UsuarioController {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<Usuario>(HttpStatus.BAD_REQUEST);
 		}
-		
 	}
 	
-	@GetMapping(value = "/listar", produces ="application/json")     
-	public ResponseEntity<List<Usuario>> listClientes() { 
+	@GetMapping(value = "/listar", produces ="application/json")
+	public ResponseEntity<List<Usuario>> listClientes() {
+		
 		try {
+			List<Usuario> usuarios = usuarioService.getAll();
+			return new ResponseEntity<List<Usuario>>(usuarios, HttpStatus.OK);
 			
-			List<Usuario> usuarios = usuarioService.getAll();             
-
-			return new ResponseEntity<List<Usuario>>(usuarios, HttpStatus.OK);                      
-		} catch (Exception e) {             
-			System.out.println(e.getMessage());             
-			return new ResponseEntity<List<Usuario>>(HttpStatus.BAD_REQUEST);         
-		}     
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<List<Usuario>>(HttpStatus.BAD_REQUEST);
+		}
 	}
+	
 	
 	@PutMapping(value = "/{id}")     
 	public ResponseEntity<Usuario> updateUsuario(@RequestBody Usuario usuario, @PathVariable("id") int id){
