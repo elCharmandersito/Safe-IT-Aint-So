@@ -15,12 +15,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.ubb.testing.safeit.models.Usuario;
 import cl.ubb.testing.safeit.services.UsuarioService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RestController
 @RequestMapping("usuarios")
 public class UsuarioController {
 	@Autowired
 	private UsuarioService usuarioService;
+
+	@GetMapping({"/","/index"})
+	public String index(){return "index";}
+
+	@PostMapping("/user_form")
+	public String userForm(RedirectAttributes rAttributes){
+		rAttributes
+				.addFlashAttribute("mensaje", "Agregado correctamente");
+		return "redirect:/success";
+	}
+
+	@GetMapping("/success")
+	public String success(){return "success";
+	}
 	
 	@PostMapping(value = "/agregar", produces ="application/json")
 	public ResponseEntity<Usuario> addCliente(@RequestBody Usuario usuario) {
@@ -47,7 +62,6 @@ public class UsuarioController {
 		}
 	}
 	
-	
 	@PutMapping(value = "/{id}")     
 	public ResponseEntity<Usuario> updateUsuario(@RequestBody Usuario usuario, @PathVariable("id") int id){
 		Usuario usuarioAux;         
@@ -61,6 +75,4 @@ public class UsuarioController {
 		}
 		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);                       
 	}
-	
-
 }

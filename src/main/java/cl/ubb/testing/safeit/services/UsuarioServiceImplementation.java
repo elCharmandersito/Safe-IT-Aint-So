@@ -34,8 +34,4 @@ public class UsuarioServiceImplementation implements UsuarioService {
 		return repo.findByApellidoPaterno(apellido);
 		
 	}
-	
-	
-	
-
 }
