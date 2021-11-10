@@ -10,4 +10,6 @@ import cl.ubb.testing.safeit.models.Usuario;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer>, CustomUsuarioRepository<Usuario>{
 
+	Usuario findByCorreo(String correo);
+
 }

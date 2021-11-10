@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CustomUsuarioRepository<Usuario> {
 	List<Usuario> findByApellidoPaterno(String apellido);
+	
 }

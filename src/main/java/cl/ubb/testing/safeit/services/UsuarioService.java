@@ -10,7 +10,9 @@ public interface UsuarioService {
 
 	public List<Usuario> getAll();
 
-	public Usuario getById(int id);
+	public Usuario findById(int id);
 	
 	public List<Usuario> getApellido(String apellido);
+	
+	public Usuario loadUsuarioByCorreo(String correo);
 }

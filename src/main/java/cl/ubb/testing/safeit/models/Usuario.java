@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import net.bytebuddy.asm.Advice.This;
+
 @Entity
 public class Usuario {
 	@Id
@@ -22,6 +24,8 @@ public class Usuario {
 	private String apellidoMaterno;
 	private String direccion;
 	private String correo;
+	private String password;
+	private String token;
 	private int fono;
 	private Rol rol;
 	
@@ -29,7 +33,7 @@ public class Usuario {
 	List<Reporte> reportes;
 	
 	public Usuario(int idUsuario, String nombre, String apellidoPaterno, String apellidoMaterno, String direccion,
-			String correo, int fono, Rol rol) {
+			String correo, String password, String token, int fono, Rol rol) {
 		super();
 		this.idUsuario = idUsuario;
 		this.nombre = nombre;
@@ -37,6 +41,8 @@ public class Usuario {
 		this.apellidoMaterno = apellidoMaterno;
 		this.direccion = direccion;
 		this.correo = correo;
+		this.password = password;
+		this.token = token;
 		this.fono = fono;
 		this.rol = rol;
 		this.reportes = new ArrayList<Reporte>();
@@ -46,12 +52,12 @@ public class Usuario {
 		
 	}
 
-	public int getidUsuario() {
+	public int getIdUsuario() {
 		return idUsuario;
 	}
 
-	public void setidUsuario(int id_usuario) {
-		this.idUsuario = id_usuario;
+	public void setidUsuario(int idUsuario) {
+		this.idUsuario = idUsuario;
 	}
 
 	public String getNombre() {
@@ -117,6 +123,24 @@ public class Usuario {
 	public void setReportes(List<Reporte> reportes) {
 		this.reportes = reportes;
 	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	
 	
 	
 	
