@@ -21,13 +21,31 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.ubb.testing.safeit.models.Usuario;
 import cl.ubb.testing.safeit.services.UsuarioService;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @RestController
 public class UsuarioController {
 	@Autowired
 	private UsuarioService usuarioService;
+
+	@GetMapping({"/","/index"})
+	public String index(){return "index";}
+
+	@PostMapping("/user_form")
+	public String userForm(RedirectAttributes rAttributes){
+		rAttributes
+				.addFlashAttribute("mensaje", "Agregado correctamente");
+		return "redirect:/success";
+	}
+
+	@GetMapping("/success")
+	public String success(){return "success";
+	}
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -92,7 +110,6 @@ public class UsuarioController {
 		}
 	}
 	
-	
 	@PutMapping(value = "/{id}")     
 	public ResponseEntity<Usuario> updateUsuario(@RequestBody Usuario usuario, @PathVariable("id") int id){
 		Usuario usuarioAux;         
@@ -106,6 +123,4 @@ public class UsuarioController {
 		}
 		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);                       
 	}
-	
-
 }
