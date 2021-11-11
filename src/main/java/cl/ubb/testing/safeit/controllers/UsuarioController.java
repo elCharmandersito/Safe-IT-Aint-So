@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,9 +28,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 @RestController
 public class UsuarioController {
+	
 	@Autowired
 	private UsuarioService usuarioService;
 
@@ -38,8 +39,7 @@ public class UsuarioController {
 
 	@PostMapping("/user_form")
 	public String userForm(RedirectAttributes rAttributes){
-		rAttributes
-				.addFlashAttribute("mensaje", "Agregado correctamente");
+		rAttributes.addFlashAttribute("mensaje", "Agregado correctamente");
 		return "redirect:/success";
 	}
 
@@ -49,11 +49,11 @@ public class UsuarioController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@PostMapping(value = "/agregar", produces ="application/json")
 	public ResponseEntity<Usuario> addCliente(@RequestBody Usuario usuario) {
 		try {
-			usuarioService.saveUsuario(usuario);
+			usuarioService.save(usuario);
 			return new ResponseEntity<Usuario> (usuario, HttpStatus.CREATED);
 			
 		} catch (Exception e) {
@@ -62,6 +62,7 @@ public class UsuarioController {
 		}
 	}
 	
+	/*
 	@PostMapping("user")
 	public ResponseEntity<Usuario> login(@RequestParam("correo") String correo, @RequestParam("password") String pwd) {
 		String token = getJWTToken(correo);
@@ -95,32 +96,45 @@ public class UsuarioController {
 						secretKey.getBytes()).compact();
 
 		return "Bearer " + token;
-	}
+	}*/
 	
 	@GetMapping(value = "/listar", produces ="application/json")
 	public ResponseEntity<List<Usuario>> listClientes() {
-		
-		try {
+		if (!usuarioService.getAll().isEmpty()) {
 			List<Usuario> usuarios = usuarioService.getAll();
 			return new ResponseEntity<List<Usuario>>(usuarios, HttpStatus.OK);
-			
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return new ResponseEntity<List<Usuario>>(HttpStatus.BAD_REQUEST);
 		}
+		return new ResponseEntity<List<Usuario>>(HttpStatus.NOT_FOUND);
 	}
+	
+	
 	
 	@PutMapping(value = "/{id}")     
 	public ResponseEntity<Usuario> updateUsuario(@RequestBody Usuario usuario, @PathVariable("id") int id){
-		Usuario usuarioAux;         
+		//Usuario usuarioAux;         
 		try {
-			Usuario updateUsuario = usuarioService.findById(id);
+			//Usuario updateUsuario = usuarioService.findById(id);
 			usuario.setidUsuario(id);
-			usuarioService.saveUsuario(usuario);
+			usuarioService.save(usuario);
 		} catch (Exception e) {             
 			e.printStackTrace(); 
 			return new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);                       
 	}
+	
+	/*
+	@DeleteMapping(value = "/{id}")     
+	public ResponseEntity<Usuario> deleteUsuario(@PathVariable("id") int id){
+		Usuario usuario;         
+		try {
+			usuario = usuarioService.findById(id);
+			usuario.setidUsuario(id);
+			usuarioService.delete(usuario);
+		} catch (Exception e) {             
+			e.printStackTrace(); 
+			return new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);                       
+	}*/
 }

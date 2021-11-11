@@ -32,6 +32,7 @@ public class UsuarioFixture {
 	public static Usuario obtenerUsuario() {
 		Usuario usuario = new Usuario();
 		usuario.setidUsuario(1);
+		usuario.setCorreo("correo@gmail.com");
 		usuario.setApellidoMaterno("Cea");
 		usuario.setApellidoPaterno("Parra");
 		usuario.setNombre("Daniel");
