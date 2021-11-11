@@ -28,12 +28,13 @@ public class Usuario {
 	private String token;
 	private int fono;
 	private Rol rol;
+	private boolean activo = false;
 	
 	@OneToMany(mappedBy = "usuario")
 	List<Reporte> reportes;
 	
 	public Usuario(int idUsuario, String nombre, String apellidoPaterno, String apellidoMaterno, String direccion,
-			String correo, String password, String token, int fono, Rol rol) {
+			String correo, String password, String token, int fono, Rol rol, boolean activo) {
 		super();
 		this.idUsuario = idUsuario;
 		this.nombre = nombre;
@@ -46,6 +47,7 @@ public class Usuario {
 		this.fono = fono;
 		this.rol = rol;
 		this.reportes = new ArrayList<Reporte>();
+		this.setActivo(activo);
 	}
 
 	public Usuario() {
@@ -138,6 +140,14 @@ public class Usuario {
 	
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public boolean isActivo() {
+		return activo;
+	}
+
+	public void setActivo(boolean activo) {
+		this.activo = activo;
 	}
 	
 	

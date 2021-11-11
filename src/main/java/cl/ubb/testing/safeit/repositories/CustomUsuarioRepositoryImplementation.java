@@ -17,6 +17,5 @@ public class CustomUsuarioRepositoryImplementation implements CustomUsuarioRepos
 	public List<Usuario> findByApellidoPaterno(String apellido) {
 		return em.createQuery("SELECT Usuario FROM Usuario usuario").getResultList();
 	}
-	
-	
+
 }

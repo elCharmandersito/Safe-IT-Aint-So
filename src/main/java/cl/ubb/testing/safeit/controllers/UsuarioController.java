@@ -46,9 +46,7 @@ public class UsuarioController {
 	@GetMapping("/success")
 	public String success(){return "success";
 	}
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+
 	
 	@PostMapping(value = "/agregar", produces ="application/json")
 	public ResponseEntity<Usuario> addCliente(@RequestBody Usuario usuario) {
@@ -63,39 +61,17 @@ public class UsuarioController {
 	}
 	
 	@PostMapping("user")
-	public ResponseEntity<Usuario> login(@RequestParam("correo") String correo, @RequestParam("password") String pwd) {
-		String token = getJWTToken(correo);
-		Usuario user = usuarioService.loadUsuarioByCorreo(correo);
-		if (passwordEncoder.matches(pwd, user.getPassword())) {
-			user.setToken(token);		
+	public ResponseEntity<Usuario> login(@RequestParam("correo") String correo, @RequestParam("password") String pwd) {	
+		try {
+			Usuario user = usuarioService.login(correo, pwd);
 			return new ResponseEntity<Usuario>(user, HttpStatus.OK);
-		} else {
+		} catch (Exception e) {
 			return new ResponseEntity<Usuario>(HttpStatus.UNAUTHORIZED);
+
 		}
-		
-		
 	}
 
-	private String getJWTToken(String correo) {
-		String secretKey = "mySecretKey";
-		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-				.commaSeparatedStringToAuthorityList(usuarioService.loadUsuarioByCorreo(correo).getRol().toString());
-		
-		String token = Jwts
-				.builder()
-				.setId("softtekJWT")
-				.setSubject(correo)
-				.claim("authorities",
-						grantedAuthorities.stream()
-								.map(GrantedAuthority::getAuthority)
-								.collect(Collectors.toList()))
-				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 600000))
-				.signWith(SignatureAlgorithm.HS512,
-						secretKey.getBytes()).compact();
-
-		return "Bearer " + token;
-	}
+	
 	
 	@GetMapping(value = "/listar", produces ="application/json")
 	public ResponseEntity<List<Usuario>> listClientes() {
@@ -122,5 +98,16 @@ public class UsuarioController {
 			return new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);                       
+	}
+	
+	@PostMapping("/validarUsuario")
+	public ResponseEntity<Usuario> validarUsuario(@RequestParam("id") int id) {	
+		try {
+			Usuario user = usuarioService.validarUsuario(id);
+			return new ResponseEntity<Usuario>(user, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
+
+		}
 	}
 }
