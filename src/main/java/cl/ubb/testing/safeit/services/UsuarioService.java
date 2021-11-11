@@ -36,4 +36,7 @@ public interface UsuarioService {
 
 	public void delete(Usuario usuario);
 
+	Usuario merge(Usuario usuario)throws UsuarioErrorException;
+
+
 }

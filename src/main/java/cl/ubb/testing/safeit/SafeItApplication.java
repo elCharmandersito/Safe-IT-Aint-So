@@ -27,7 +27,7 @@ public class SafeItApplication {
 			http.csrf().disable()
 				.addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.authorizeRequests()
-				.antMatchers("/agregar", "/user").permitAll()
+				.antMatchers("/agregar", "/login").permitAll()
 				.anyRequest().authenticated();
 		}
 	}
