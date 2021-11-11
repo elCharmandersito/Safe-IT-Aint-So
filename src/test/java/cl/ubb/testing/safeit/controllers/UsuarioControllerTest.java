@@ -1,26 +1,14 @@
 package cl.ubb.testing.safeit.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +19,7 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -53,6 +42,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cl.ubb.testing.safeit.exceptions.UsuarioErrorException;
+import cl.ubb.testing.safeit.exceptions.UsuarioNotFoundException;
 import cl.ubb.testing.safeit.fixtures.UsuarioFixture;
 import cl.ubb.testing.safeit.models.Usuario;
 import cl.ubb.testing.safeit.services.UsuarioService;
@@ -68,6 +58,9 @@ public class UsuarioControllerTest {
 	@Mock
 	private UsuarioServiceImplementation usuarioService;
 	
+	@Mock
+	private  PasswordEncoder passwordEncoder;
+	
 	@InjectMocks
 	private UsuarioController usuarioController;
 
@@ -82,10 +75,8 @@ public class UsuarioControllerTest {
 	
 	@Test
 	public void siInvocoAddUsuarioConUnUsuarioValidoDebeRetornarElUsuarioYCreated() throws Exception {
-
 		// Given
-		Usuario usuario = new Usuario();
-		//given(usuarioService.save(usuario)).willReturn(usuario);
+		Usuario usuario = UsuarioFixture.obtenerUsuario();
 				
 		// When
 		MockHttpServletResponse response = mockMvc.perform(post("/agregar")
@@ -97,6 +88,22 @@ public class UsuarioControllerTest {
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
 		assertThat(response.getContentAsString()).isEqualTo(
 		              jsonUsuario.write(usuario).getJson());
+	}
+	
+	@Test
+	public void siInvocoAddUsuarioConUnUsuarioNullDebeRetornarBadRequest() throws Exception, IOException {
+		// Given
+		Usuario usuario = UsuarioFixture.obtenerUsuario();
+		given(usuarioService.save(usuario)).willReturn(null);
+				
+		// When
+		MockHttpServletResponse response = mockMvc.perform(post("/agregar")
+		        .contentType(MediaType.APPLICATION_JSON).content(jsonUsuario.write(usuario).getJson()))
+				.andReturn()
+				.getResponse();
+				
+		// Then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 	
 	@Test
@@ -130,10 +137,44 @@ public class UsuarioControllerTest {
 		MockHttpServletResponse response = mockMvc.perform(get("/listar")
                 .accept(MediaType.APPLICATION_JSON))
         		.andReturn()
-        		.getResponse();
-		
+        		.getResponse();	
 		
 		// Then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
-	}	
+	}
+
+	
+	@Test
+	void siSeInvocavalidarUsuarioYSeValidaCorrectamenteDebeRetornarUsuarioYOk() throws IOException, Exception {
+		//given
+		Usuario usuario = UsuarioFixture.obtenerUsuario();
+		given(usuarioService.validarUsuario(usuario.getIdUsuario())).willReturn(usuario);
+		
+		// When
+		MockHttpServletResponse response = mockMvc.perform(post("/validarUsuario/?id=1")
+		        .contentType(MediaType.APPLICATION_JSON).content(jsonUsuario.write(usuario).getJson()))
+				.andReturn()
+				.getResponse();
+				
+		// Then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+		assertThat(response.getContentAsString()).isEqualTo(
+                jsonUsuario.write(usuario).getJson()
+        );
+	}
+	
+	@Test
+	void siSeInvocaUpdateUsuarioConUnUsuarioNullRetornaNotFound() throws Exception, IOException {
+		//given
+		Usuario usuario = UsuarioFixture.obtenerUsuario();
+		
+		// When
+		MockHttpServletResponse response = mockMvc.perform(put("/actualizar/1")
+		        .contentType(MediaType.APPLICATION_JSON).content(jsonUsuario.write(usuario).getJson()))
+				.andReturn()
+				.getResponse();
+				
+		// Then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+	}
 }

@@ -3,9 +3,7 @@ package cl.ubb.testing.safeit.services;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
@@ -51,14 +49,6 @@ public class UsuarioServiceImplementation implements UsuarioService {
 		
 	}
 
-
-	/*
-	@Override
-	public void saveUsuario(Usuario usuario) {
-		usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-		repo.save(usuario);
-	}*/
-
 	@Override
 	public List<Usuario> getAll() {
 		return repo.findAll();
@@ -86,8 +76,6 @@ public class UsuarioServiceImplementation implements UsuarioService {
 		} else {
 			throw new WrongPasswordException();
 		}
-		
-		
 	}
 	
 	public String getJWTToken(String correo) throws UsuarioErrorException {
@@ -133,7 +121,5 @@ public class UsuarioServiceImplementation implements UsuarioService {
 		repo.delete(usuario);
 		
 	}
-	
-
 }
 

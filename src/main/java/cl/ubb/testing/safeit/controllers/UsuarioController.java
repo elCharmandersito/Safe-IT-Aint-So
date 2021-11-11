@@ -77,18 +77,21 @@ public class UsuarioController {
 	
 	
 	@PutMapping(value = "/actualizar/{id}")     
-	public ResponseEntity<Usuario> updateUsuario(@RequestBody Usuario usuario, @PathVariable("id") int id){
-		//Usuario usuarioAux;         
+	public ResponseEntity<Usuario> updateUsuario(@RequestBody Usuario usuario, @PathVariable("id") int id){ 
 		try {
-			//Usuario updateUsuario = usuarioService.findById(id);
 			usuario.setidUsuario(id);
 			usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-			usuarioService.merge(usuario);
+			if (usuarioService.merge(usuario) != null) {
+				return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);  
+			}else {
+				return new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
+			}
+			
+			   
 		} catch (Exception e) {             
 			e.printStackTrace(); 
-			return new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);                       
+			return new ResponseEntity<Usuario>(HttpStatus.BAD_REQUEST);
+		}             
 	}
 	
 	@PostMapping("/validarUsuario")
@@ -101,7 +104,6 @@ public class UsuarioController {
 
 		}
 	}
-
 	
 	@DeleteMapping(value = "/eliminar/{id}")     
 	public ResponseEntity<Usuario> deleteUsuario(@PathVariable("id") int id){
