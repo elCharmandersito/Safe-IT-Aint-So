@@ -1,14 +1,9 @@
 package cl.ubb.testing.safeit.controllers;
 
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,16 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import cl.ubb.testing.safeit.models.Usuario;
 import cl.ubb.testing.safeit.services.UsuarioService;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RestController
@@ -51,7 +40,7 @@ public class UsuarioController {
 	private PasswordEncoder passwordEncoder;
 
 	@PostMapping(value = "/agregar", produces ="application/json")
-	public ResponseEntity<Usuario> addCliente(@RequestBody Usuario usuario) {
+	public ResponseEntity<Usuario> addUsuario(@RequestBody Usuario usuario) {
 		try {
 			usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 			usuarioService.save(usuario);
@@ -64,7 +53,7 @@ public class UsuarioController {
 	}
 	
 	
-	@PostMapping("user")
+	@PostMapping("login")
 	public ResponseEntity<Usuario> login(@RequestParam("correo") String correo, @RequestParam("password") String pwd) {	
 		try {
 			Usuario user = usuarioService.login(correo, pwd);
@@ -87,18 +76,22 @@ public class UsuarioController {
 	
 	
 	
-	@PutMapping(value = "/{id}")     
-	public ResponseEntity<Usuario> updateUsuario(@RequestBody Usuario usuario, @PathVariable("id") int id){
-		//Usuario usuarioAux;         
+	@PutMapping(value = "/actualizar/{id}")     
+	public ResponseEntity<Usuario> updateUsuario(@RequestBody Usuario usuario, @PathVariable("id") int id){ 
 		try {
-			//Usuario updateUsuario = usuarioService.findById(id);
 			usuario.setidUsuario(id);
-			usuarioService.save(usuario);
+			usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+			if (usuarioService.merge(usuario) != null) {
+				return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);  
+			}else {
+				return new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
+			}
+			
+			   
 		} catch (Exception e) {             
 			e.printStackTrace(); 
-			return new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);                       
+			return new ResponseEntity<Usuario>(HttpStatus.BAD_REQUEST);
+		}             
 	}
 	
 	@PostMapping("/validarUsuario")
@@ -111,20 +104,19 @@ public class UsuarioController {
 
 		}
 	}
-
 	
-	@DeleteMapping(value = "/{id}")     
+	@DeleteMapping(value = "/eliminar/{id}")     
 	public ResponseEntity<Usuario> deleteUsuario(@PathVariable("id") int id){
 		Usuario usuario;         
 		try {
 			usuario = usuarioService.findById(id);
 			usuario.setidUsuario(id);
 			usuarioService.delete(usuario);
+			return new ResponseEntity<>(HttpStatus.OK);  
 		} catch (Exception e) {             
 			e.printStackTrace(); 
-			return new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);                       
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}                     
 	}
 
 }

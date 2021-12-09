@@ -2,15 +2,12 @@ package cl.ubb.testing.safeit.services;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
 import cl.ubb.testing.safeit.models.EmailBody;
 import cl.ubb.testing.safeit.repositories.EmailPort;
 

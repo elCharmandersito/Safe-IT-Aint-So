@@ -3,18 +3,14 @@ package cl.ubb.testing.safeit.services;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import cl.ubb.testing.safeit.exceptions.EmailNotFoundException;
 import cl.ubb.testing.safeit.exceptions.UsuarioErrorException;
 import cl.ubb.testing.safeit.exceptions.UsuarioNotFoundException;
@@ -53,14 +49,6 @@ public class UsuarioServiceImplementation implements UsuarioService {
 		
 	}
 
-
-	/*
-	@Override
-	public void saveUsuario(Usuario usuario) {
-		usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-		repo.save(usuario);
-	}*/
-
 	@Override
 	public List<Usuario> getAll() {
 		return repo.findAll();
@@ -88,8 +76,6 @@ public class UsuarioServiceImplementation implements UsuarioService {
 		} else {
 			throw new WrongPasswordException();
 		}
-		
-		
 	}
 	
 	public String getJWTToken(String correo) throws UsuarioErrorException {
@@ -106,7 +92,7 @@ public class UsuarioServiceImplementation implements UsuarioService {
 								.map(GrantedAuthority::getAuthority)
 								.collect(Collectors.toList()))
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 600000))
+				.setExpiration(new Date(System.currentTimeMillis() + 6000000))
 				.signWith(SignatureAlgorithm.HS512,
 						secretKey.getBytes()).compact();
 
@@ -129,13 +115,11 @@ public class UsuarioServiceImplementation implements UsuarioService {
 		}
 	}
 
-	
+	@Transactional
 	@Override
 	public void delete(Usuario usuario) {
 		repo.delete(usuario);
 		
 	}
-	
-
 }
 
