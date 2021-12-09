@@ -25,13 +25,16 @@ import cl.ubb.testing.safeit.services.ReporteServiceImplementation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -136,6 +139,45 @@ private MockMvc mockMvc;
 		//Then
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
+	
+	@Test
+	void siInvocoFindByFechaYExistenReportesDebeDevolverTodosLosReportesConEsaFechaYStatusOk() throws Exception {
+		//Given
+		List <Reporte> reportes = ReporteFixture.obtenerReportesFixture();
+		String sDate1="09/12/2021";
+		Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+		
+		given(reporteService.findByFecha(date)).willReturn(reportes);
+		
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/fecha/2021-12-09")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+		
+		//Then
+		System.out.println(jsonListReportes.write(reportes));
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(jsonListReportes.write(reportes).getJson(), response.getContentAsString());
+	}
+	
+	@Test
+	void siInvocoFindByFechaYNoExistenReportesConEsaFechaDebeDevolverStatusNotFound() throws Exception {
+		//Given
+		String sDate1="09/12/2021";
+		Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+		given(reporteService.findByFecha(date)).willReturn(new ArrayList<Reporte>());
+		
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/fecha/2021-12-09")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+		
+		//Then
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+	}
+	
 	/*
 	@Test
 	void siInvocoDeleteReporteYSeEliminaExitosamenteDebeRetornarStatusOk() {

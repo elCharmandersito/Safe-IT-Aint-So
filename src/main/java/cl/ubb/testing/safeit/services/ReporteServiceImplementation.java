@@ -1,5 +1,6 @@
 package cl.ubb.testing.safeit.services;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,11 @@ public class ReporteServiceImplementation implements ReporteService{
 
 	public Reporte update(Reporte reporte) {
 		return repo.saveAndFlush(reporte);
+	}
+	
+	public List<Reporte> findByFecha(Date fecha) {
+		return repo.findByDate(fecha);
+		
 	}
 
 

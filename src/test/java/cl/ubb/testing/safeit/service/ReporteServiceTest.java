@@ -5,6 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
+
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -176,5 +180,37 @@ public class ReporteServiceTest {
 		assertEquals("Rayados",resultado.get(0).getNombre());
 		assertEquals(1,resultado.get(1).getIdReporte());
 		assertEquals("Basura",resultado.get(1).getNombre());
+	}
+	
+	@Test
+	void siInvocoFindByFechaYExistenReportesConEsaFechaDebeRetornarUnaListaDeReportes() throws ParseException {
+		// Arrange
+		List<Reporte> resultado;
+		when(reporteRepository.findByDate(new Date(1639017322L))).thenReturn(ReporteFixture.obtenerReportesFixture());
+		String sDate1="09/12/2021";
+		Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+		
+		// Act
+		resultado = reporteService.findByFecha(new Date(1639017322L));
+		
+		// Assert
+		assertNotNull(resultado);
+		assertEquals(date, resultado.get(0).getFecha());
+	}
+	
+	@Test
+	void siInvocoFindByFechaYNoExistenReportesConEsaFechaDebeRetornarUnaListaVacia() throws ParseException {
+		// Arrange
+		List<Reporte> resultado;
+		String sDate1="09/12/2021";
+		Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+		when(reporteRepository.findByDate(date)).thenReturn(new ArrayList<Reporte>());
+		
+		// Act
+		resultado = reporteService.findByFecha(date);
+
+		// Assert
+		assertNotNull(resultado);
+		assertEquals(0, resultado.size());
 	}
 }

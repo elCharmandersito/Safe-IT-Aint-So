@@ -1,7 +1,9 @@
 package cl.ubb.testing.safeit.controllers;
 
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,5 +72,15 @@ public class ReporteController {
 		}             
 	}
 	
+	
+	@GetMapping(value = "/reportes/fecha/{fecha}", produces ="application/json")
+	public ResponseEntity<List<Reporte>> findReportesByFecha(@PathVariable("fecha") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha) {
+		List<Reporte> reportes = reporteService.findByFecha(fecha);
+		if (!reportes.isEmpty()) {
+			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
+		}
+		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
+
+	}
 	
 }
