@@ -53,6 +53,7 @@ public class UsuarioController {
 	@PostMapping(value = "/agregar", produces ="application/json")
 	public ResponseEntity<Usuario> addCliente(@RequestBody Usuario usuario) {
 		try {
+			usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 			usuarioService.save(usuario);
 			return new ResponseEntity<Usuario> (usuario, HttpStatus.CREATED);
 			
