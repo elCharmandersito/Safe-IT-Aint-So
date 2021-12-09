@@ -101,10 +101,5 @@ public class Reporte {
 		this.emisor = emisor;
 	}
 	
-	
-	
-	
-	
-	
 
 }

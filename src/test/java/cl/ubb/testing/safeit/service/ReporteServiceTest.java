@@ -186,7 +186,7 @@ public class ReporteServiceTest {
 	void siInvocoFindByFechaYExistenReportesConEsaFechaDebeRetornarUnaListaDeReportes() throws ParseException {
 		// Arrange
 		List<Reporte> resultado;
-		when(reporteRepository.findByDate(new Date(1639017322L))).thenReturn(ReporteFixture.obtenerReportesFixture());
+		when(reporteRepository.findByFecha(new Date(1639017322L))).thenReturn(ReporteFixture.obtenerReportesFixture());
 		String sDate1="09/12/2021";
 		Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
 		
@@ -204,11 +204,41 @@ public class ReporteServiceTest {
 		List<Reporte> resultado;
 		String sDate1="09/12/2021";
 		Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
-		when(reporteRepository.findByDate(date)).thenReturn(new ArrayList<Reporte>());
+		when(reporteRepository.findByFecha(date)).thenReturn(new ArrayList<Reporte>());
 		
 		// Act
 		resultado = reporteService.findByFecha(date);
 
+		// Assert
+		assertNotNull(resultado);
+		assertEquals(0, resultado.size());
+	}
+	
+	@Test
+	void siInvocoFindByNombreYExistenReportesConEseNombreDebeRetornarUnaListaDeReportes()  {
+		// Arrange
+		List<Reporte> reportes, resultado;
+		reportes = ReporteFixture.obtenerReportesPorNombreFixture();
+		when(reporteRepository.findByNombre("Rayados")).thenReturn(reportes);
+		
+		// Act
+		resultado = reporteService.findByNombre("Rayados");
+		
+		// Assert
+		assertNotNull(resultado);
+		assertEquals("Rayados en pared", resultado.get(0).getNombre());
+		assertEquals("Rayados en las bancas", resultado.get(1).getNombre());
+	}
+	
+	@Test
+	void siInvocoFindByNombreYNoExistenReportesConEseNombreDebeRetornarUnaListaVacia()  {
+		// Arrange
+		List<Reporte> resultado;
+		when(reporteRepository.findByNombre("Rayados")).thenReturn(new ArrayList<>());
+		
+		// Act
+		resultado = reporteService.findByNombre("Rayados");
+				
 		// Assert
 		assertNotNull(resultado);
 		assertEquals(0, resultado.size());

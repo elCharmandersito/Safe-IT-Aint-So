@@ -83,4 +83,14 @@ public class ReporteController {
 
 	}
 	
+	@GetMapping(value = "/reportes/nombre/{nombre}", produces ="application/json")
+	public ResponseEntity<List<Reporte>> findReportesByNombre( @PathVariable("nombre") String nombre) {
+		List<Reporte> reportes = reporteService.findByNombre(nombre);
+		if (!reportes.isEmpty()) {
+			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
+		}
+		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
+
+	}
+	
 }

@@ -10,6 +10,8 @@ public interface ReporteRepository extends JpaRepository<Reporte, Integer>{
 
 	Reporte findById(int id);
 	
-	List<Reporte> findByDate(Date date);
+	List<Reporte> findByFecha(Date date);
+
+	List<Reporte> findByNombre(String nombre);
 
 }

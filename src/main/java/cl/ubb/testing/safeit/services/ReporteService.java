@@ -17,4 +17,6 @@ public interface ReporteService {
 	
 	List<Reporte> findByFecha(Date fecha);
 
+	List<Reporte> findByNombre(String nombre);
+
 }

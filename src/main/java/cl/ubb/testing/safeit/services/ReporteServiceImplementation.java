@@ -50,8 +50,12 @@ public class ReporteServiceImplementation implements ReporteService{
 	}
 	
 	public List<Reporte> findByFecha(Date fecha) {
-		return repo.findByDate(fecha);
+		return repo.findByFecha(fecha);
 		
+	}
+
+	public List<Reporte> findByNombre(String nombre) {
+		return repo.findByNombre(nombre);
 	}
 
 

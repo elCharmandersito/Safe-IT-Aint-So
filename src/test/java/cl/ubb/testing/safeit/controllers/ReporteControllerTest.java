@@ -178,6 +178,39 @@ private MockMvc mockMvc;
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
 	
+	@Test
+	void siInvocoFindByNombreYExistenReportesConEseNombreDebeDevolverReportesConEseNombreYStatusOk() throws Exception {
+		//Given
+		List <Reporte> reportes = ReporteFixture.obtenerReportesPorNombreFixture();
+		given(reporteService.findByNombre("Rayados")).willReturn(reportes);
+		
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/nombre/Rayados")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+		
+		//Then
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(jsonListReportes.write(reportes).getJson(), response.getContentAsString());
+	}
+	
+	@Test
+	void siInvocoFindByNombreYNoExistenReportesConEseNombreDebeRetornarStatusNotFound() throws Exception {
+		//Given
+		given(reporteService.findByNombre("Rayados")).willReturn(new ArrayList<>());
+		
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/nombre/Rayados")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+		
+		//Then
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+	}
+	
+	
 	/*
 	@Test
 	void siInvocoDeleteReporteYSeEliminaExitosamenteDebeRetornarStatusOk() {
