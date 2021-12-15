@@ -19,4 +19,6 @@ public interface ReporteService {
 
 	List<Reporte> findByNombre(String nombre);
 
+	long deleteById(int id);
+
 }

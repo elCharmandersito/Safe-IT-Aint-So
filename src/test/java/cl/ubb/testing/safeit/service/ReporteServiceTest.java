@@ -243,4 +243,34 @@ public class ReporteServiceTest {
 		assertNotNull(resultado);
 		assertEquals(0, resultado.size());
 	}
+	
+	@Test
+	void siInvocoDeleteByIdConUnIdValidoYSeEliminaExitosamenteDebeRetornarLaCantidadDeElementosEliminados() {
+		//Arrange
+		Reporte reporte;
+		long  resultado;
+		reporte = ReporteFixture.obtenerReporte();
+		when (reporteRepository.deleteById(reporte.getIdReporte())).thenReturn(((long)1));
+		
+		//Act
+		resultado = reporteService.deleteById(reporte.getIdReporte());
+		
+		//Assert
+		assertEquals((long)1,resultado);
+	}
+	
+	@Test
+	void siInvocoDeleteByIdConUnIdValidoYSeNoSeEliminaDebeRetornarCero() {
+		//Arrange
+		Reporte reporte;
+		long  resultado;
+		reporte = ReporteFixture.obtenerReporte();
+		when (reporteRepository.deleteById(reporte.getIdReporte())).thenReturn(((long)0));
+		
+		//Act
+		resultado = reporteService.deleteById(reporte.getIdReporte());
+		
+		//Assert
+		assertEquals((long)0,resultado);
+	}
 }

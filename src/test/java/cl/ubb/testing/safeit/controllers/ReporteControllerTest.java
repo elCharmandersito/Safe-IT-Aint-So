@@ -27,6 +27,7 @@ import static org.hamcrest.CoreMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -211,22 +212,42 @@ private MockMvc mockMvc;
 	}
 	
 	
-	/*
+	
 	@Test
-	void siInvocoDeleteReporteYSeEliminaExitosamenteDebeRetornarStatusOk() {
+	void siInvocoDeleteReporteYSeEliminaExitosamenteDebeRetornarStatusOk() throws Exception {
 		//Given
 		Reporte reporte = ReporteFixture.obtenerReporte();
-		//given(reporteService.deleteById(reporte.getIdReporte())).willReturn(reporte);
+		given(reporteService.deleteById(reporte.getIdReporte())).willReturn((long)1);
 		
 		//When
-		
+		MockHttpServletResponse response = mockMvc.perform(delete("/reporte/eliminar/0")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
 		
 		//Then
-			
-		
-		
+		assertEquals(HttpStatus.OK.value(), response.getStatus());	
+				
 	}
 	
+	@Test
+	void siInvocoDeleteReporteYSeNoSeEliminaDebeRetornarNotFound() throws Exception {
+		//Given
+		Reporte reporte = ReporteFixture.obtenerReporte();
+		given(reporteService.deleteById(reporte.getIdReporte())).willReturn((long)0);
+		
+		//When
+		MockHttpServletResponse response = mockMvc.perform(delete("/reporte/eliminar/0")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+		
+		//Then
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());	
+				
+	}
+	
+	/*
 	@Test
 	void siInvocoUpdateReporteYSeActualizaCorrectamenteDebeRetornarElReporteYStatusOk() throws IOException, Exception {
 		//Given

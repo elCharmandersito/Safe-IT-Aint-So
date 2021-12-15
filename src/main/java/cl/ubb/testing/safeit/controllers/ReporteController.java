@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import cl.ubb.testing.safeit.models.Reporte;
+import cl.ubb.testing.safeit.models.Usuario;
 import cl.ubb.testing.safeit.services.ReporteService;
 
 @RestController
@@ -72,6 +74,16 @@ public class ReporteController {
 		}             
 	}
 	
+	@DeleteMapping(value = "/reporte/eliminar/{id}")     
+	public ResponseEntity<Reporte> deleteReporte(@PathVariable("id") int id){
+		long cant = 0;         
+		cant = reporteService.deleteById(id);
+		if (cant == 1) {
+			return new ResponseEntity<>(HttpStatus.OK);  
+		}else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}                    
+	}
 	
 	@GetMapping(value = "/reportes/fecha/{fecha}", produces ="application/json")
 	public ResponseEntity<List<Reporte>> findReportesByFecha(@PathVariable("fecha") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha) {
@@ -90,7 +102,8 @@ public class ReporteController {
 			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
 		}
 		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
-
 	}
+	
+	
 	
 }

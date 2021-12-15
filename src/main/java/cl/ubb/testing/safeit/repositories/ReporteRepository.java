@@ -13,5 +13,7 @@ public interface ReporteRepository extends JpaRepository<Reporte, Integer>{
 	List<Reporte> findByFecha(Date date);
 
 	List<Reporte> findByNombre(String nombre);
+	
+	long deleteById(int id);
 
 }

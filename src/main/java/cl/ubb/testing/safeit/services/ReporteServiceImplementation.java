@@ -41,8 +41,9 @@ public class ReporteServiceImplementation implements ReporteService{
 		return repo.findAll();
 	}
 
-	public void deleteById(int id) {
-		repo.deleteById(id);
+	public long deleteById(int id) {
+		return repo.deleteById(id);
+		
 	}
 
 	public Reporte update(Reporte reporte) {
