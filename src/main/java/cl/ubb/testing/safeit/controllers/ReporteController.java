@@ -1,5 +1,6 @@
 package cl.ubb.testing.safeit.controllers;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +14,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import cl.ubb.testing.safeit.models.EmailBody;
 import cl.ubb.testing.safeit.models.Reporte;
 import cl.ubb.testing.safeit.models.Usuario;
+import cl.ubb.testing.safeit.services.EmailService;
 import cl.ubb.testing.safeit.services.ReporteService;
+import cl.ubb.testing.safeit.services.UsuarioService;
 
 @RestController
 public class ReporteController {
 	
 	@Autowired
 	private ReporteService reporteService;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private UsuarioService usuarioService;
 
 	
 	@GetMapping(value = "/reportes/{id}", produces ="application/json")
@@ -36,6 +47,19 @@ public class ReporteController {
 	
 	@PostMapping(value = "/reporte/agregar", produces ="application/json")
 	public ResponseEntity<Reporte> createReporte(@RequestBody Reporte reporte) {
+		List<Usuario> users = new ArrayList<>();
+		EmailBody mail = null;
+		
+		if (reporteService.findById(reporte.getIdReporte()) == null) {
+			String mailContent = reporte.getNombre() + "\n"
+					+ reporte.getFecha() + "\n" + reporte.getDescripcion() +"\n" + reporte.getNivelGravedad();
+			users = usuarioService.getAll();
+			for(Usuario user: users) {
+				mail = new EmailBody(user.getCorreo(), mailContent, "Nuevo reporte añadido");
+				emailService.sendEmail(mail);
+			}
+		}
+		
 		try {
 			reporteService.save(reporte);
 			return new ResponseEntity<Reporte> (reporte, HttpStatus.CREATED);
