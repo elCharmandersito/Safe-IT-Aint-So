@@ -45,8 +45,8 @@ public class ReporteController {
 	}
 
 	
-	@PostMapping(value = "/reporte/agregar", produces ="application/json")
-	public ResponseEntity<Reporte> createReporte(@RequestBody Reporte reporte) {
+	@PostMapping(value = "/reporte/agregar/{id}", produces ="application/json")
+	public ResponseEntity<Reporte> createReporte(@RequestBody Reporte reporte, @PathVariable("id") int id) {
 		List<Usuario> users = new ArrayList<>();
 		EmailBody mail = null;
 		if (reporteService.findById(reporte.getIdReporte()) == null) {
@@ -58,6 +58,13 @@ public class ReporteController {
 				emailService.sendEmail(mail);
 			}
 		}
+		Usuario usuario = usuarioService.findById(id);
+		reporte.setUsuario(usuario);
+		
+		List<Reporte> reportes = new ArrayList<>();
+		reportes.add(reporte);
+		usuario.setReportes(reportes);
+		
 		try {
 			reporteService.save(reporte);	
 			return new ResponseEntity<Reporte> (reporte, HttpStatus.CREATED);
