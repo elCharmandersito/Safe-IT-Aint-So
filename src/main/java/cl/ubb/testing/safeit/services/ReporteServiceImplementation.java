@@ -41,8 +41,8 @@ public class ReporteServiceImplementation implements ReporteService{
 		return repo.findAll();
 	}
 
-	public long deleteById(int id) {
-		return repo.deleteById(id);
+	public void deleteById(int id) {
+		repo.deleteById(id);
 		
 	}
 
@@ -62,6 +62,11 @@ public class ReporteServiceImplementation implements ReporteService{
 	@Override
 	public List<Reporte> findByDescripcion(String descripcion) {
 		return repo.findByDescripcionContaining(descripcion);
+	}
+
+	@Override
+	public boolean existsById(int id) {
+		return repo.existsById(id);
 	}
 
 

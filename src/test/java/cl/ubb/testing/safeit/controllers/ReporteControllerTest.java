@@ -243,48 +243,13 @@ private MockMvc mockMvc;
 		//Then
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
-	
-	@Test
-	void siInvocoDeleteReporteYSeEliminaExitosamenteDebeRetornarStatusOk() throws Exception {
-		//Given
-		Reporte reporte = ReporteFixture.obtenerReporte();
-		given(reporteService.deleteById(reporte.getIdReporte())).willReturn((long)1);
-		
-		//When
-		MockHttpServletResponse response = mockMvc.perform(delete("/reporte/eliminar/0")
-		        .contentType(MediaType.APPLICATION_JSON))
-				.andReturn()
-				.getResponse();
-		
-		//Then
-		assertEquals(HttpStatus.OK.value(), response.getStatus());	
-				
-	}
-	
-	@Test
-	void siInvocoDeleteReporteYSeNoSeEliminaDebeRetornarNotFound() throws Exception {
-		//Given
-		Reporte reporte = ReporteFixture.obtenerReporte();
-		given(reporteService.deleteById(reporte.getIdReporte())).willReturn((long)0);
-		
-		//When
-		MockHttpServletResponse response = mockMvc.perform(delete("/reporte/eliminar/0")
-		        .contentType(MediaType.APPLICATION_JSON))
-				.andReturn()
-				.getResponse();
-		
-		//Then
-		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());	
-				
-	}
-	
+
 	/*
 	@Test
 	void siInvocoUpdateReporteYSeActualizaCorrectamenteDebeRetornarElReporteYStatusOk() throws IOException, Exception {
 		//Given
 		Reporte reporte = ReporteFixture.obtenerReporte();
 		given(reporteService.update((Reporte) any(Reporte.class))).willReturn(reporte);
-		
 		//When
 		MockHttpServletResponse response = mockMvc.perform(put("/reporte/actualizar/0")
 		        .contentType(MediaType.APPLICATION_JSON).content(jsonReporte.write(reporte).getJson()))
@@ -294,7 +259,8 @@ private MockMvc mockMvc;
 		//Then
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 
-	}*/
+	}
+	*/
 	
 	
 }

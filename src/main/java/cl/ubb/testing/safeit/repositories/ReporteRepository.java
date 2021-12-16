@@ -14,7 +14,7 @@ public interface ReporteRepository extends JpaRepository<Reporte, Integer>{
 
 	List<Reporte> findByNombreContaining(String nombre);
 	
-	long deleteById(int id);
+	void deleteById(int id);
 
 	List<Reporte> findByDescripcionContaining(String descripcion);
 

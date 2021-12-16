@@ -19,7 +19,9 @@ public interface ReporteService {
 
 	List<Reporte> findByNombre(String nombre);
 
-	long deleteById(int id);
+	void deleteById(int id);
+	
+	boolean existsById(int id);
 
 	List<Reporte> findByDescripcion(String descripcion);
 
