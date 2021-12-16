@@ -217,43 +217,47 @@ private MockMvc mockMvc;
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
 	
+
 	/*
 	
 	@Test
-	void siInvocoDeleteReporteYSeEliminaExitosamenteDebeRetornarStatusOk() throws Exception {
+	void siInvocoFindByDescripcionYExistenReportesConEsaDescripcionDebeDevolverReportesConEsaDescripcionYStatusOk() throws Exception {
 		//Given
-		Reporte reporte = ReporteFixture.obtenerReporte();
-		given(reporteService.deleteById(reporte.getIdReporte())).willReturn((long)1);
+		List <Reporte> reportes = ReporteFixture.obtenerReportesPorNombreFixture();
+		given(reporteService.findByDescripcion("Rayados")).willReturn(reportes);
 		
 		//When
-		MockHttpServletResponse response = mockMvc.perform(delete("/reportes/eliminar/0")
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/descripcion/Rayados")
 		        .contentType(MediaType.APPLICATION_JSON))
 				.andReturn()
 				.getResponse();
 		
 		//Then
-		assertEquals(HttpStatus.OK.value(), response.getStatus());	
-				
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(jsonListReportes.write(reportes).getJson(), response.getContentAsString());
 	}
 	*/
 	
 	/*
 	@Test
-	void siInvocoDeleteReporteYSeNoSeEliminaDebeRetornarNotFound() throws Exception {
+	void siInvocoFindByDescripcionYNoExistenReportesConEsaDescripcionDebeRetornarStatusNotFound() throws Exception {
 		//Given
-		Reporte reporte = ReporteFixture.obtenerReporte();
-		given(reporteService.deleteById(reporte.getIdReporte())).willReturn((long)0);
+		given(reporteService.findByDescripcion("Rayados")).willReturn(new ArrayList<>());
 		
 		//When
+<<<<<<< HEAD
 		MockHttpServletResponse response = mockMvc.perform(delete("/reportes/eliminar/0")
+=======
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/descripcion/Rayados")
+>>>>>>> 5b62c78180e15bb194b26de411e26442765ef5cb
 		        .contentType(MediaType.APPLICATION_JSON))
 				.andReturn()
 				.getResponse();
 		
 		//Then
-		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());	
-				
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
+<<<<<<< HEAD
 	*/
 	
 
@@ -289,6 +293,7 @@ private MockMvc mockMvc;
 		//Then
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
+
 
 	/*
 	@Test
@@ -365,6 +370,7 @@ private MockMvc mockMvc;
 
 		//When
 		MockHttpServletResponse response = mockMvc.perform(get("/reportes/listar/descendente")
+
 						.contentType(MediaType.APPLICATION_JSON))
 				.andReturn()
 				.getResponse();
@@ -429,6 +435,5 @@ private MockMvc mockMvc;
 		//Then
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
-	
-	
+
 }

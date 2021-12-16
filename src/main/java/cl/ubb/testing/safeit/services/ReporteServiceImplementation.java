@@ -49,11 +49,7 @@ public class ReporteServiceImplementation implements ReporteService{
 	public Reporte update(Reporte reporte) {
 		return repo.saveAndFlush(reporte);
 	}
-	
-	public List<Reporte> findByFecha(Date fecha, Date fecha2) {
-		return repo.findAllByFechaBetween(fecha, fecha2);
-		
-	}
+
 
 	public List<Reporte> findByNombre(String nombre) {
 		return repo.findByNombreContaining(nombre);
@@ -79,12 +75,11 @@ public class ReporteServiceImplementation implements ReporteService{
 		return repo.findAllByOrderByFechaDesc();
 	}
 
+
 	@Override
 	public List<Reporte> findAllByFechaBetween(Date fecha, Date fecha2) {
 		return repo.findAllByFechaBetween(fecha, fecha2);
 	}
-
-
 
 
 }

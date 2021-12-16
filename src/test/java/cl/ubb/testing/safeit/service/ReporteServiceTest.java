@@ -11,6 +11,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -251,35 +253,127 @@ public class ReporteServiceTest {
 	
 	/*
 	@Test
-	void siInvocoDeleteByIdConUnIdValidoYSeEliminaExitosamenteDebeRetornarLaCantidadDeElementosEliminados() {
-		//Arrange
-		Reporte reporte;
-		long  resultado;
-		reporte = ReporteFixture.obtenerReporte();
-		when (reporteRepository.deleteById(reporte.getIdReporte())).thenReturn(((long)1));
+	void siInvocoFindByDescripcionYExistenReportesConEsaDescripcionDebeRetornarUnaListaDeReportes()  {
+		// Arrange
+		List<Reporte> reportes, resultado;
+		reportes = ReporteFixture.obtenerReportesPorNombreFixture();
+		when(reporteRepository.findByDescripcionContaining("rayones")).thenReturn(reportes);
 		
-		//Act
-		resultado = reporteService.deleteById(reporte.getIdReporte());
+		// Act
+		resultado = reporteService.findByDescripcion("rayones");
 		
-		//Assert
-		assertEquals((long)1,resultado);
+		// Assert
+		assertNotNull(resultado);
+		assertEquals("Se encontraron rayones en mi casa", resultado.get(0).getDescripcion());
+		assertEquals("Se encontraron rayones en las bancas de la plaza", resultado.get(1).getDescripcion());
 	}
 	*/
 	
-	/*
+
 	@Test
-	void siInvocoDeleteByIdConUnIdValidoYSeNoSeEliminaDebeRetornarCero() {
-		//Arrange
-		Reporte reporte;
-		long  resultado;
-		reporte = ReporteFixture.obtenerReporte();
-		when (reporteRepository.deleteById(reporte.getIdReporte())).thenReturn(((long)0));
+	void siInvocoFindByDescripcionYNoExistenReportesConEsaDescripcionDebeRetornarUnaListaVacia()  {
+		// Arrange
+		List<Reporte> resultado;
+		when(reporteRepository.findByDescripcionContaining("rayones")).thenReturn(new ArrayList<>());
 		
-		//Act
-		resultado = reporteService.deleteById(reporte.getIdReporte());
-		
-		//Assert
-		assertEquals((long)0,resultado);
+		// Act
+		resultado = reporteService.findByDescripcion("rayones");
+				
+		// Assert
+		assertNotNull(resultado);
+		assertEquals(0, resultado.size());
 	}
-	*/
+
+	@Test
+	@DisplayName(value = "FindAllByOrderByFechaAsc")
+	void siInvocoFindAllByOrderByFechaAscYExistenReportesDebeRetornarUnaListaOrdenadaAsc() throws ParseException {
+		// Arrange
+		List<Reporte> resultado;
+		String fechaMenor="2021/10/11";
+		String fechaMayor="2021/11/15";
+
+		Date date1 = new SimpleDateFormat("yyyy/MM/dd").parse(fechaMenor);
+		Date date2 = new SimpleDateFormat("yyyy/MM/dd").parse(fechaMayor);
+
+		Reporte reporte1 = ReporteFixture.obtenerReporte();
+		Reporte reporte2 = ReporteFixture.obtenerReporte();
+
+		reporte1.setFecha(date1);
+		reporte2.setFecha(date2);
+
+		ArrayList<Reporte> reportes = new ArrayList<Reporte>();
+		reportes.add(reporte1);
+		reportes.add(reporte2);
+
+		when(reporteRepository.findAllByOrderByFechaAsc()).thenReturn(reportes);
+
+		//Act
+		resultado = reporteService.findAllByOrderByFechaAsc();
+
+		//Assert
+		assertNotNull(resultado);
+		assertEquals(reportes, resultado);
+	}
+
+	@Test
+	@DisplayName(value = "FindAllByOrderByFechaDesc")
+	void siInvocoFindAllByOrderByFechaDescYExistenReportesDebeRetornarUnaListaOrdenadaDesc() throws ParseException {
+		// Arrange
+		List<Reporte> resultado;
+		String fechaMenor="2021/10/11";
+		String fechaMayor="2021/11/15";
+
+		Date date1 = new SimpleDateFormat("yyyy/MM/dd").parse(fechaMenor);
+		Date date2 = new SimpleDateFormat("yyyy/MM/dd").parse(fechaMayor);
+
+		Reporte reporte1 = ReporteFixture.obtenerReporte();
+		Reporte reporte2 = ReporteFixture.obtenerReporte();
+
+		reporte1.setFecha(date1);
+		reporte2.setFecha(date2);
+
+		ArrayList<Reporte> reportes = new ArrayList<Reporte>();
+		reportes.add(reporte1);
+		reportes.add(reporte2);
+
+		when(reporteRepository.findAllByOrderByFechaDesc()).thenReturn(reportes);
+
+		//Act
+		resultado = reporteService.findAllByOrderByFechaDesc();
+
+		//Assert
+		assertNotNull(resultado);
+		assertEquals(reportes, resultado);
+	}
+
+	@Test
+	@DisplayName(value = "FindAllByOrderByFechaAsc LISTA_VACIA")
+	void siInvocoFindAllByOrderByFechaAscYNoExistenReportesDebeRetornarUnaListaVacia(){
+		// Arrange
+		List<Reporte> resultado;
+		when(reporteRepository.findAllByOrderByFechaAsc()).thenReturn(new ArrayList<Reporte>());
+
+		//Act
+		resultado = reporteService.findAllByOrderByFechaAsc();
+
+		//Assert
+		assertNotNull(resultado);
+		assertEquals(0, resultado.size());
+	}
+
+	@Test
+	@DisplayName(value = "FindAllByOrderByFechaDesc LISTA_VACIA")
+	void siInvocoFindAllByOrderByFechaDescYNoExistenReportesDebeRetornarUnaListaVacia(){
+		// Arrange
+		List<Reporte> resultado;
+		when(reporteRepository.findAllByOrderByFechaDesc()).thenReturn(new ArrayList<Reporte>());
+
+		//Act
+		resultado = reporteService.findAllByOrderByFechaDesc();
+
+		//Assert
+		assertNotNull(resultado);
+		assertEquals(0, resultado.size());
+	}
+	
 }

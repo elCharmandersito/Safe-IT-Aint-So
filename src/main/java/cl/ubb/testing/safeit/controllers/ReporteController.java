@@ -45,11 +45,11 @@ public class ReporteController {
 	}
 
 	
+
 	@PostMapping(value = "/reportes/agregar/{id}", produces ="application/json")
 	public ResponseEntity<Reporte> createReporte(@RequestBody Reporte reporte, @PathVariable("id") int id) {
 		List<Usuario> users = new ArrayList<>();
 		EmailBody mail = null;
-		
 		if (reporteService.findById(reporte.getIdReporte()) == null) {
 			String mailContent = reporte.getNombre() + "\n"
 					+ reporte.getFecha() + "\n" + reporte.getDescripcion() +"\n" + reporte.getNivelGravedad();
@@ -152,6 +152,7 @@ public class ReporteController {
 		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
 	}
 
+
 	@GetMapping(value = "/reportes/listar/descendente", produces ="application/json")
 	public ResponseEntity<List<Reporte>> findAllByOrderByFechaDesc() {
 		List<Reporte> reportes = reporteService.findAllByOrderByFechaDesc();
@@ -160,4 +161,6 @@ public class ReporteController {
 		}
 		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
 	}
+
 }
+
