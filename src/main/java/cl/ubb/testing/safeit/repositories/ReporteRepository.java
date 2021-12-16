@@ -12,8 +12,10 @@ public interface ReporteRepository extends JpaRepository<Reporte, Integer>{
 	
 	List<Reporte> findByFecha(Date date);
 
-	List<Reporte> findByNombre(String nombre);
+	List<Reporte> findByNombreContaining(String nombre);
 	
 	long deleteById(int id);
+
+	List<Reporte> findByDescripcionContaining(String descripcion);
 
 }

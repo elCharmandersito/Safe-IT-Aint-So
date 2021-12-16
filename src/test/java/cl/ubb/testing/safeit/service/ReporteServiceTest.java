@@ -219,7 +219,7 @@ public class ReporteServiceTest {
 		// Arrange
 		List<Reporte> reportes, resultado;
 		reportes = ReporteFixture.obtenerReportesPorNombreFixture();
-		when(reporteRepository.findByNombre("Rayados")).thenReturn(reportes);
+		when(reporteRepository.findByNombreContaining("Rayados")).thenReturn(reportes);
 		
 		// Act
 		resultado = reporteService.findByNombre("Rayados");
@@ -234,7 +234,7 @@ public class ReporteServiceTest {
 	void siInvocoFindByNombreYNoExistenReportesConEseNombreDebeRetornarUnaListaVacia()  {
 		// Arrange
 		List<Reporte> resultado;
-		when(reporteRepository.findByNombre("Rayados")).thenReturn(new ArrayList<>());
+		when(reporteRepository.findByNombreContaining("Rayados")).thenReturn(new ArrayList<>());
 		
 		// Act
 		resultado = reporteService.findByNombre("Rayados");
@@ -243,6 +243,38 @@ public class ReporteServiceTest {
 		assertNotNull(resultado);
 		assertEquals(0, resultado.size());
 	}
+	
+	@Test
+	void siInvocoFindByDescripcionYExistenReportesConEsaDescripcionDebeRetornarUnaListaDeReportes()  {
+		// Arrange
+		List<Reporte> reportes, resultado;
+		reportes = ReporteFixture.obtenerReportesPorNombreFixture();
+		when(reporteRepository.findByDescripcionContaining("rayones")).thenReturn(reportes);
+		
+		// Act
+		resultado = reporteService.findByDescripcion("rayones");
+		
+		// Assert
+		assertNotNull(resultado);
+		assertEquals("Se encontraron rayones en mi casa", resultado.get(0).getDescripcion());
+		assertEquals("Se encontraron rayones en las bancas de la plaza", resultado.get(1).getDescripcion());
+	}
+	
+	
+	@Test
+	void siInvocoFindByDescripcionYNoExistenReportesConEsaDescripcionDebeRetornarUnaListaVacia()  {
+		// Arrange
+		List<Reporte> resultado;
+		when(reporteRepository.findByDescripcionContaining("rayones")).thenReturn(new ArrayList<>());
+		
+		// Act
+		resultado = reporteService.findByDescripcion("rayones");
+				
+		// Assert
+		assertNotNull(resultado);
+		assertEquals(0, resultado.size());
+	}
+	
 	
 	@Test
 	void siInvocoDeleteByIdConUnIdValidoYSeEliminaExitosamenteDebeRetornarLaCantidadDeElementosEliminados() {

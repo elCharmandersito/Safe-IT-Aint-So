@@ -21,4 +21,6 @@ public interface ReporteService {
 
 	long deleteById(int id);
 
+	List<Reporte> findByDescripcion(String descripcion);
+
 }

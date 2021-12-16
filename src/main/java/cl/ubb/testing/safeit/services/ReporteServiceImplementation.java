@@ -56,7 +56,12 @@ public class ReporteServiceImplementation implements ReporteService{
 	}
 
 	public List<Reporte> findByNombre(String nombre) {
-		return repo.findByNombre(nombre);
+		return repo.findByNombreContaining(nombre);
+	}
+
+	@Override
+	public List<Reporte> findByDescripcion(String descripcion) {
+		return repo.findByDescripcionContaining(descripcion);
 	}
 
 
