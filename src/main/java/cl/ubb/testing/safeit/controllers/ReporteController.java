@@ -49,7 +49,6 @@ public class ReporteController {
 	public ResponseEntity<Reporte> createReporte(@RequestBody Reporte reporte) {
 		List<Usuario> users = new ArrayList<>();
 		EmailBody mail = null;
-		
 		if (reporteService.findById(reporte.getIdReporte()) == null) {
 			String mailContent = reporte.getNombre() + "\n"
 					+ reporte.getFecha() + "\n" + reporte.getDescripcion() +"\n" + reporte.getNivelGravedad();
@@ -59,9 +58,8 @@ public class ReporteController {
 				emailService.sendEmail(mail);
 			}
 		}
-		
 		try {
-			reporteService.save(reporte);
+			reporteService.save(reporte);	
 			return new ResponseEntity<Reporte> (reporte, HttpStatus.CREATED);
 			
 		} catch (Exception e) {
@@ -99,10 +97,10 @@ public class ReporteController {
 	}
 	
 	@DeleteMapping(value = "/reporte/eliminar/{id}")     
-	public ResponseEntity<Reporte> deleteReporte(@PathVariable("id") int id){
-		long cant = 0;         
-		cant = reporteService.deleteById(id);
-		if (cant == 1) {
+	public ResponseEntity<Reporte> deleteReporte(@PathVariable("id") int id){        
+		reporteService.deleteById((int) id);
+		boolean seBorro = reporteService.existsById(id);
+		if (!seBorro) {
 			return new ResponseEntity<>(HttpStatus.OK);  
 		}else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
