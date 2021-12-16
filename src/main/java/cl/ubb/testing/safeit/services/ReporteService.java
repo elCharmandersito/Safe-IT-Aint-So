@@ -15,10 +15,18 @@ public interface ReporteService {
 
 	Reporte update(Reporte reporte);
 	
-	List<Reporte> findByFecha(Date fecha);
+	List<Reporte> findAllByFechaBetween(Date fecha, Date fecha2);
 
 	List<Reporte> findByNombre(String nombre);
 
-	long deleteById(int id);
+	void deleteById(int id);
+	
+	boolean existsById(int id);
+
+	List<Reporte> findByDescripcion(String descripcion);
+
+	List<Reporte> findAllByOrderByFechaAsc();
+
+	List<Reporte> findAllByOrderByFechaDesc();
 
 }

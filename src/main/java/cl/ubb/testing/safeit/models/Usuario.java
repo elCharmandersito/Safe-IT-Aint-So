@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import net.bytebuddy.asm.Advice.This;
 
 @Entity
@@ -31,6 +33,7 @@ public class Usuario {
 	private boolean activo = false;
 	
 	@OneToMany(mappedBy = "usuario")
+	@JsonIgnore
 	List<Reporte> reportes;
 	
 	public Usuario(int idUsuario, String nombre, String apellidoPaterno, String apellidoMaterno, String direccion,

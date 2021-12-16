@@ -45,8 +45,8 @@ public class ReporteController {
 	}
 
 	
-	@PostMapping(value = "/reporte/agregar", produces ="application/json")
-	public ResponseEntity<Reporte> createReporte(@RequestBody Reporte reporte) {
+	@PostMapping(value = "/reportes/agregar/{id}", produces ="application/json")
+	public ResponseEntity<Reporte> createReporte(@RequestBody Reporte reporte, @PathVariable("id") int id) {
 		List<Usuario> users = new ArrayList<>();
 		EmailBody mail = null;
 		
@@ -59,9 +59,15 @@ public class ReporteController {
 				emailService.sendEmail(mail);
 			}
 		}
+		Usuario usuario = usuarioService.findById(id);
+		reporte.setUsuario(usuario);
+		
+		List<Reporte> reportes = new ArrayList<>();
+		reportes.add(reporte);
+		usuario.setReportes(reportes);
 		
 		try {
-			reporteService.save(reporte);
+			reporteService.save(reporte);	
 			return new ResponseEntity<Reporte> (reporte, HttpStatus.CREATED);
 			
 		} catch (Exception e) {
@@ -81,7 +87,7 @@ public class ReporteController {
 	}
 	
 	
-	@PutMapping(value = "/reporte/actualizar/{id}")     
+	@PutMapping(value = "/reportes/actualizar/{id}")     
 	public ResponseEntity<Reporte> updateReporte(@RequestBody Reporte reporte, @PathVariable("id") int id){ 
 		try {
 			reporte.setIdReporte(id);
@@ -98,20 +104,20 @@ public class ReporteController {
 		}             
 	}
 	
-	@DeleteMapping(value = "/reporte/eliminar/{id}")     
-	public ResponseEntity<Reporte> deleteReporte(@PathVariable("id") int id){
-		long cant = 0;         
-		cant = reporteService.deleteById(id);
-		if (cant == 1) {
+	@DeleteMapping(value = "/reportes/eliminar/{id}")     
+	public ResponseEntity<Reporte> deleteReporte(@PathVariable("id") int id){        
+		reporteService.deleteById((int) id);
+		boolean seBorro = reporteService.existsById(id);
+		if (!seBorro) {
 			return new ResponseEntity<>(HttpStatus.OK);  
 		}else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}                    
 	}
 	
-	@GetMapping(value = "/reportes/fecha/{fecha}", produces ="application/json")
-	public ResponseEntity<List<Reporte>> findReportesByFecha(@PathVariable("fecha") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha) {
-		List<Reporte> reportes = reporteService.findByFecha(fecha);
+	@GetMapping(value = "/reportes/fecha/{fecha}/{fecha2}", produces ="application/json")
+	public ResponseEntity<List<Reporte>> findReportesByFecha(@PathVariable("fecha") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha, @PathVariable("fecha2") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha2) {
+		List<Reporte> reportes = reporteService.findAllByFechaBetween(fecha, fecha2);
 		if (!reportes.isEmpty()) {
 			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
 		}
@@ -128,6 +134,30 @@ public class ReporteController {
 		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
 	}
 	
-	
-	
+	@GetMapping(value = "/reportes/descripcion/{descripcion}", produces ="application/json")
+	public ResponseEntity<List<Reporte>> findReportesByDescripcion( @PathVariable("descripcion") String descripcion) {
+		List<Reporte> reportes = reporteService.findByDescripcion(descripcion);
+		if (!reportes.isEmpty()) {
+			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
+		}
+		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
+	}
+
+	@GetMapping(value = "/reportes/listar/ascendente", produces ="application/json")
+	public ResponseEntity<List<Reporte>> findAllByOrderByFechaAsc() {
+		List<Reporte> reportes = reporteService.findAllByOrderByFechaAsc();
+		if (!reportes.isEmpty()) {
+			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
+		}
+		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
+	}
+
+	@GetMapping(value = "/reportes/listar/descendente", produces ="application/json")
+	public ResponseEntity<List<Reporte>> findAllByOrderByFechaDesc() {
+		List<Reporte> reportes = reporteService.findAllByOrderByFechaDesc();
+		if (!reportes.isEmpty()) {
+			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
+		}
+		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
+	}
 }

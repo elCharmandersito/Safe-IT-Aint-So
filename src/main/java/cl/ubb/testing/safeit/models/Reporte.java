@@ -28,6 +28,9 @@ public class Reporte {
 	
 	@OneToMany(mappedBy = "reporte")
 	private List<Emisor> emisor;
+	
+	@OneToMany(mappedBy = "reporte")
+	private List<Correccion> correcciones;
 
 	public Reporte(int idReporte, String nombre, Date fecha, String descripcion, NivelGravedad nivelGravedad,
 			Usuario usuario, List<Emisor> emisor) {
@@ -101,5 +104,12 @@ public class Reporte {
 		this.emisor = emisor;
 	}
 	
+	public List<Correccion> getCorrecciones() {
+		return correcciones;
+	}
+	
+	public void setCorrecciones(List<Correccion> correcciones) {
+		this.correcciones = correcciones;
+	}
 
 }

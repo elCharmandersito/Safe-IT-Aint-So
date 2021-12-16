@@ -41,8 +41,8 @@ public class ReporteServiceImplementation implements ReporteService{
 		return repo.findAll();
 	}
 
-	public long deleteById(int id) {
-		return repo.deleteById(id);
+	public void deleteById(int id) {
+		repo.deleteById(id);
 		
 	}
 
@@ -50,14 +50,41 @@ public class ReporteServiceImplementation implements ReporteService{
 		return repo.saveAndFlush(reporte);
 	}
 	
-	public List<Reporte> findByFecha(Date fecha) {
-		return repo.findByFecha(fecha);
+	public List<Reporte> findByFecha(Date fecha, Date fecha2) {
+		return repo.findAllByFechaBetween(fecha, fecha2);
 		
 	}
 
 	public List<Reporte> findByNombre(String nombre) {
-		return repo.findByNombre(nombre);
+		return repo.findByNombreContaining(nombre);
 	}
+
+	@Override
+	public List<Reporte> findByDescripcion(String descripcion) {
+		return repo.findByDescripcionContaining(descripcion);
+	}
+
+	@Override
+	public boolean existsById(int id) {
+		return repo.existsById(id);
+	}
+
+	@Override
+	public List<Reporte> findAllByOrderByFechaAsc() {
+		return repo.findAllByOrderByFechaAsc();
+	}
+
+	@Override
+	public List<Reporte> findAllByOrderByFechaDesc() {
+		return repo.findAllByOrderByFechaDesc();
+	}
+
+	@Override
+	public List<Reporte> findAllByFechaBetween(Date fecha, Date fecha2) {
+		return repo.findAllByFechaBetween(fecha, fecha2);
+	}
+
+
 
 
 }

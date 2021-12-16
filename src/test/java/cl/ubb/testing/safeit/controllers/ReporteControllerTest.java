@@ -1,6 +1,7 @@
 package cl.ubb.testing.safeit.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +26,7 @@ import cl.ubb.testing.safeit.services.ReporteServiceImplementation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -145,13 +147,15 @@ private MockMvc mockMvc;
 	void siInvocoFindByFechaYExistenReportesDebeDevolverTodosLosReportesConEsaFechaYStatusOk() throws Exception {
 		//Given
 		List <Reporte> reportes = ReporteFixture.obtenerReportesFixture();
-		String sDate1="09/12/2021";
+		String sDate1="08/12/2021";
 		Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+		String sDate2="20/12/2021";
+		Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate2);
 		
-		given(reporteService.findByFecha(date)).willReturn(reportes);
+		given(reporteService.findAllByFechaBetween(date, date2)).willReturn(reportes);
 		
 		//When
-		MockHttpServletResponse response = mockMvc.perform(get("/reportes/fecha/2021-12-09")
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/fecha/2021-12-08/2021-12-20")
 		        .contentType(MediaType.APPLICATION_JSON))
 				.andReturn()
 				.getResponse();
@@ -167,10 +171,12 @@ private MockMvc mockMvc;
 		//Given
 		String sDate1="09/12/2021";
 		Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
-		given(reporteService.findByFecha(date)).willReturn(new ArrayList<Reporte>());
+		String sDate2="20/12/2021";
+		Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate2);
+		given(reporteService.findAllByFechaBetween(date, date2)).willReturn(new ArrayList<Reporte>());
 		
 		//When
-		MockHttpServletResponse response = mockMvc.perform(get("/reportes/fecha/2021-12-09")
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/fecha/2021-12-09/2021-12-20")
 		        .contentType(MediaType.APPLICATION_JSON))
 				.andReturn()
 				.getResponse();
@@ -211,7 +217,7 @@ private MockMvc mockMvc;
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
 	
-	
+	/*
 	
 	@Test
 	void siInvocoDeleteReporteYSeEliminaExitosamenteDebeRetornarStatusOk() throws Exception {
@@ -220,7 +226,7 @@ private MockMvc mockMvc;
 		given(reporteService.deleteById(reporte.getIdReporte())).willReturn((long)1);
 		
 		//When
-		MockHttpServletResponse response = mockMvc.perform(delete("/reporte/eliminar/0")
+		MockHttpServletResponse response = mockMvc.perform(delete("/reportes/eliminar/0")
 		        .contentType(MediaType.APPLICATION_JSON))
 				.andReturn()
 				.getResponse();
@@ -229,7 +235,9 @@ private MockMvc mockMvc;
 		assertEquals(HttpStatus.OK.value(), response.getStatus());	
 				
 	}
+	*/
 	
+	/*
 	@Test
 	void siInvocoDeleteReporteYSeNoSeEliminaDebeRetornarNotFound() throws Exception {
 		//Given
@@ -237,7 +245,7 @@ private MockMvc mockMvc;
 		given(reporteService.deleteById(reporte.getIdReporte())).willReturn((long)0);
 		
 		//When
-		MockHttpServletResponse response = mockMvc.perform(delete("/reporte/eliminar/0")
+		MockHttpServletResponse response = mockMvc.perform(delete("/reportes/eliminar/0")
 		        .contentType(MediaType.APPLICATION_JSON))
 				.andReturn()
 				.getResponse();
@@ -246,27 +254,181 @@ private MockMvc mockMvc;
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());	
 				
 	}
+	*/
 	
+
+	
+	@Test
+	void siInvocoFindByDescripcionYExistenReportesConEsaDescripcionDebeDevolverReportesConEsaDescripcionYStatusOk() throws Exception {
+		//Given
+		List <Reporte> reportes = ReporteFixture.obtenerReportesPorNombreFixture();
+		given(reporteService.findByDescripcion("Rayados")).willReturn(reportes);
+		
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/descripcion/Rayados")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+		
+		//Then
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(jsonListReportes.write(reportes).getJson(), response.getContentAsString());
+	}
+	
+	@Test
+	void siInvocoFindByDescripcionYNoExistenReportesConEsaDescripcionDebeRetornarStatusNotFound() throws Exception {
+		//Given
+		given(reporteService.findByDescripcion("Rayados")).willReturn(new ArrayList<>());
+		
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/descripcion/Rayados")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+		
+		//Then
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+	}
+
 	/*
 	@Test
 	void siInvocoUpdateReporteYSeActualizaCorrectamenteDebeRetornarElReporteYStatusOk() throws IOException, Exception {
 		//Given
 		Reporte reporte = ReporteFixture.obtenerReporte();
 		given(reporteService.update((Reporte) any(Reporte.class))).willReturn(reporte);
-		
 		//When
-		MockHttpServletResponse response = mockMvc.perform(put("/reporte/actualizar/0")
+		MockHttpServletResponse response = mockMvc.perform(put("/reportes/actualizar/0")
 		        .contentType(MediaType.APPLICATION_JSON).content(jsonReporte.write(reporte).getJson()))
 				.andReturn()
 				.getResponse();
 		
 		//Then
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
-		
-		
-		
-		
-	}*/
+
+	}
+	*/
+
+	@Test
+	@DisplayName(value = "FindAllByOrderByFechaAsc")
+	void siInvocoFindAllByOrderByFechaAscYExistenReportesDebeRetornarUnaListaOrdenadaAscYStatusOK() throws Exception {
+		//Given
+		String fechaMenor="2021/10/11";
+		String fechaMayor="2021/11/15";
+
+		Date date1 = new SimpleDateFormat("yyyy/MM/dd").parse(fechaMenor);
+		Date date2 = new SimpleDateFormat("yyyy/MM/dd").parse(fechaMayor);
+
+		Reporte reporte1 = new Reporte();
+		Reporte reporte2 = new Reporte();
+
+		reporte1.setFecha(date1);
+		reporte2.setFecha(date2);
+
+		ArrayList<Reporte> reportes = new ArrayList<>();
+		reportes.add(reporte1);
+		reportes.add(reporte2);
+
+		given(reporteService.findAllByOrderByFechaAsc()).willReturn(reportes);
+
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/listar/ascendente")
+						.contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+
+		//Then
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertTrue(reporte1.getFecha().before(reporte2.getFecha()));
+	}
+
+	@Test
+	@DisplayName(value = "FindAllByOrderByFechaDesc")
+	void siInvocoFindAllByOrderByFechaDescYExistenReportesDebeRetornarUnaListaOrdenadaAscYStatusOK() throws Exception {
+		//Given
+		String fechaMenor="2021/10/11";
+		String fechaMayor="2021/11/15";
+
+		Date date1 = new SimpleDateFormat("yyyy/MM/dd").parse(fechaMenor);
+		Date date2 = new SimpleDateFormat("yyyy/MM/dd").parse(fechaMayor);
+
+		Reporte reporte1 = new Reporte();
+		Reporte reporte2 = new Reporte();
+
+		reporte1.setFecha(date1);
+		reporte2.setFecha(date2);
+
+		ArrayList<Reporte> reportes = new ArrayList<>();
+		reportes.add(reporte1);
+		reportes.add(reporte2);
+
+		given(reporteService.findAllByOrderByFechaDesc()).willReturn(reportes);
+
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/listar/descendente")
+						.contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+
+		//Then
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertTrue(reporte2.getFecha().after(reporte1.getFecha()));
+	}
+
+	@Test
+	@DisplayName(value = "FindAllByOrderByFechaAsc NOT_FOUD")
+	void siInvocoFindAllByOrderByFechaAscYNoExistenReportesDebeRetornarUnaListaVaciaYStatusNotFound() throws Exception {
+		//Given
+		String fechaMenor="2021/10/11";
+		String fechaMayor="2021/11/15";
+
+		Date date1 = new SimpleDateFormat("yyyy/MM/dd").parse(fechaMenor);
+		Date date2 = new SimpleDateFormat("yyyy/MM/dd").parse(fechaMayor);
+
+		Reporte reporte1 = new Reporte();
+		Reporte reporte2 = new Reporte();
+
+		reporte1.setFecha(date1);
+		reporte2.setFecha(date2);
+
+		given(reporteService.findAllByOrderByFechaAsc()).willReturn(new ArrayList<Reporte>());
+
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/listar/ascendente")
+						.contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+
+		//Then
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+	}
+
+	@Test
+	@DisplayName(value = "FindAllByOrderByFechaDesc NOT_FOUD")
+	void siInvocoFindAllByOrderByFechaDescYNoExistenReportesDebeRetornarUnaListaVaciaYStatusNotFound() throws Exception {
+		//Given
+		String fechaMenor="2021/10/11";
+		String fechaMayor="2021/11/15";
+
+		Date date1 = new SimpleDateFormat("yyyy/MM/dd").parse(fechaMenor);
+		Date date2 = new SimpleDateFormat("yyyy/MM/dd").parse(fechaMayor);
+
+		Reporte reporte1 = new Reporte();
+		Reporte reporte2 = new Reporte();
+
+		reporte1.setFecha(date1);
+		reporte2.setFecha(date2);
+
+		given(reporteService.findAllByOrderByFechaDesc()).willReturn(new ArrayList<Reporte>());
+
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/listar/descendente")
+						.contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+
+		//Then
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+	}
 	
 	
 }
