@@ -25,4 +25,8 @@ public interface ReporteService {
 
 	List<Reporte> findByDescripcion(String descripcion);
 
+	List<Reporte> findAllByOrderByFechaAsc();
+
+	List<Reporte> findAllByOrderByFechaDesc();
+
 }

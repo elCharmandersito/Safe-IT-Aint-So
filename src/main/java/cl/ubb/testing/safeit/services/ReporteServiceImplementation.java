@@ -69,5 +69,16 @@ public class ReporteServiceImplementation implements ReporteService{
 		return repo.existsById(id);
 	}
 
+	@Override
+	public List<Reporte> findAllByOrderByFechaAsc() {
+		return repo.findAllByOrderByFechaAsc();
+	}
+
+	@Override
+	public List<Reporte> findAllByOrderByFechaDesc() {
+		return repo.findAllByOrderByFechaDesc();
+	}
+
+
 
 }

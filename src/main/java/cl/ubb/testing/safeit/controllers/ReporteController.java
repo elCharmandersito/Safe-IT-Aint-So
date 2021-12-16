@@ -141,7 +141,22 @@ public class ReporteController {
 		}
 		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
 	}
-	
-	
-	
+
+	@GetMapping(value = "/reportes/listar/ascendente", produces ="application/json")
+	public ResponseEntity<List<Reporte>> findAllByOrderByFechaAsc() {
+		List<Reporte> reportes = reporteService.findAllByOrderByFechaAsc();
+		if (!reportes.isEmpty()) {
+			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
+		}
+		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
+	}
+
+	@GetMapping(value = "/reportes/listar/desendente", produces ="application/json")
+	public ResponseEntity<List<Reporte>> findAllByOrderByFechaDesc() {
+		List<Reporte> reportes = reporteService.findAllByOrderByFechaDesc();
+		if (!reportes.isEmpty()) {
+			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
+		}
+		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
+	}
 }

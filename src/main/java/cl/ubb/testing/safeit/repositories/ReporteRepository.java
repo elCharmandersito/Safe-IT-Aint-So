@@ -18,4 +18,8 @@ public interface ReporteRepository extends JpaRepository<Reporte, Integer>{
 
 	List<Reporte> findByDescripcionContaining(String descripcion);
 
+	List<Reporte> findAllByOrderByFechaAsc();
+
+	List<Reporte> findAllByOrderByFechaDesc();
+
 }
