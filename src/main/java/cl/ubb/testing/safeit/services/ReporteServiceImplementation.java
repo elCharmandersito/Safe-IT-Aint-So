@@ -81,5 +81,20 @@ public class ReporteServiceImplementation implements ReporteService{
 		return repo.findAllByFechaBetween(fecha, fecha2);
 	}
 
+	@Override
+	public List<Reporte> obtenerReportesPorNivelDeGravedad(String nivel) {
+		if(nivel.equalsIgnoreCase("BAJA")) {
+			return repo.obtenerReportesNivelDeGravedad(0);
+		}else {
+			if(nivel.equalsIgnoreCase("MEDIA")) {
+				return repo.obtenerReportesNivelDeGravedad(1);
+			}else {
+				if(nivel.equalsIgnoreCase("ALTA")) {
+					return repo.obtenerReportesNivelDeGravedad(2);
+				}
+			}
+		}
+		return null;
+	}
 
 }

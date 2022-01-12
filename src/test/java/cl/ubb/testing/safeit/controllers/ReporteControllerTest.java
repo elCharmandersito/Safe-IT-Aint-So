@@ -435,5 +435,41 @@ private MockMvc mockMvc;
 		//Then
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
+	
+	@Test
+	void siBuscoReportesPorNivelDeGravedadYExistenReportesConEseNivelDebeRetornarUnaListaDeReportesYStatusOk() throws Exception {
+		//Given
+		List<Reporte> reportes= ReporteFixture.obtenerReportesNivelDeGravedadFixture();
+		given(reporteService.obtenerReportesPorNivelDeGravedad("MEDIA")).willReturn(reportes);
+		
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/nivelDeGravedad/MEDIA")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+		
+		//Then
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(jsonListReportes.write(reportes).getJson(), response.getContentAsString());
+		
+	}
+	
+	@Test
+	void siBuscoReportesPorNivelDeGravedadYNoExistenReportesConEseNivelDebeRetornarUnaListaVaciaYStatusNotFound() throws Exception {
+		
+		//Given
+		given(reporteService.obtenerReportesPorNivelDeGravedad("MEDIA")).willReturn(new ArrayList<>());
+		
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/nivelDeGravedad/MEDIA")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+		
+		//Then
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());	
+		
+		
+	}
 
 }

@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import cl.ubb.testing.safeit.exceptions.ReporteErrorException;
 import cl.ubb.testing.safeit.fixtures.ReporteFixture;
+import cl.ubb.testing.safeit.models.NivelGravedad;
 import cl.ubb.testing.safeit.models.Reporte;
 import cl.ubb.testing.safeit.repositories.ReporteRepository;
 import cl.ubb.testing.safeit.services.ReporteServiceImplementation;
@@ -371,6 +372,42 @@ public class ReporteServiceTest {
 		//Act
 		resultado = reporteService.findAllByOrderByFechaDesc();
 
+		//Assert
+		assertNotNull(resultado);
+		assertEquals(0, resultado.size());
+	}
+	
+	@Test
+	void siInvocoBuscarReportePorNivelDegravedadYExistenReportesConEseNivelDebeRetornarUnaListaDeReportes() {
+		//Arrange
+		List<Reporte> reportes, resultado;
+		reportes = ReporteFixture.obtenerReportesNivelDeGravedadFixture();
+		when(reporteRepository.obtenerReportesNivelDeGravedad(1)).thenReturn(reportes);
+		
+		//Act
+		resultado = reporteService.obtenerReportesPorNivelDeGravedad("MEDIA");
+		
+		//Assert
+		assertNotNull(resultado);
+		assertEquals(0,resultado.get(0).getIdReporte());
+		assertEquals(reportes.get(0).getNombre(),resultado.get(0).getNombre());
+		assertEquals(reportes.get(0).getUsuario(),resultado.get(0).getUsuario());
+		assertEquals(NivelGravedad.MEDIA,resultado.get(0).getNivelGravedad());
+		assertEquals(1,resultado.get(1).getIdReporte());
+		assertEquals(reportes.get(1).getNombre(),resultado.get(1).getNombre());
+		assertEquals(reportes.get(1).getUsuario(),resultado.get(1).getUsuario());
+		assertEquals(NivelGravedad.MEDIA,resultado.get(1).getNivelGravedad());
+	}
+	
+	@Test
+	void siInvocoBuscarReportePorNivelDegravedadYNoExistenReportesConEseNivelDebeRetornarUnaListaVacia() {
+		//Arrange
+		List<Reporte> resultado;
+		when(reporteRepository.obtenerReportesNivelDeGravedad(1)).thenReturn(new ArrayList<>());
+		
+		//Act
+		resultado = reporteService.obtenerReportesPorNivelDeGravedad("MEDIA");
+		
 		//Assert
 		assertNotNull(resultado);
 		assertEquals(0, resultado.size());

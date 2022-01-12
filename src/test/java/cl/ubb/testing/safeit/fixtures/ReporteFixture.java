@@ -86,4 +86,36 @@ public class ReporteFixture {
 		
 		return reportes;
 	}
+	
+public static List<Reporte> obtenerReportesNivelDeGravedadFixture(){
+		
+		List <Reporte> reportes = new ArrayList<>();
+		
+		Reporte reporte = new Reporte();
+		reporte.setIdReporte(0);
+		reporte.setNombre("Rayados en pared");
+		reporte.setDescripcion("Se encontraron rayones en la pared de mi casa");
+		Date date = new Date();
+		try {
+			String sDate1="09/12/2021";
+			date = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+			reporte.setFecha(date);
+		} catch (Exception e) {
+			
+		}
+		reporte.setNivelGravedad(NivelGravedad.MEDIA);
+		 
+		
+		Reporte reporte2 = new Reporte();
+		reporte2.setIdReporte(1);
+		reporte2.setNombre("Rayados en las bancas");
+		reporte2.setDescripcion("Se encontraron rayones en las bancas de la plaza");
+		reporte2.setFecha(date);
+		reporte2.setNivelGravedad(NivelGravedad.MEDIA);
+		
+		reportes.add(reporte);
+		reportes.add(reporte2);
+		
+		return reportes;
+	}
 }

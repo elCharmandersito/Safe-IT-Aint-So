@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
 import cl.ubb.testing.safeit.models.Reporte;
 
 public interface ReporteRepository extends JpaRepository<Reporte, Integer>{
@@ -21,5 +23,8 @@ public interface ReporteRepository extends JpaRepository<Reporte, Integer>{
 	List<Reporte> findAllByOrderByFechaAsc();
 
 	List<Reporte> findAllByOrderByFechaDesc();
+	
+	@Query(value="SELECT * FROM reporte WHERE reporte.nivel_gravedad=:nivel", nativeQuery=true)
+	List<Reporte> obtenerReportesNivelDeGravedad(int nivel);
 
 }

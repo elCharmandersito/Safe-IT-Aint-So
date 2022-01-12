@@ -161,6 +161,15 @@ public class ReporteController {
 		}
 		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
 	}
+	
+	@GetMapping(value = "/reportes/nivelDeGravedad/{nivel}", produces ="application/json")
+	public ResponseEntity<List<Reporte>> findReportesNivelGravedad( @PathVariable("nivel") String nivel) {
+		List<Reporte> reportes = reporteService.obtenerReportesPorNivelDeGravedad(nivel);
+		if (!reportes.isEmpty()) {
+			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
+		}
+		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
+	}
 
 }
 

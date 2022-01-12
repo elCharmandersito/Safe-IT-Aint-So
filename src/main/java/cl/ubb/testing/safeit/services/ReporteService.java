@@ -28,5 +28,7 @@ public interface ReporteService {
 	List<Reporte> findAllByOrderByFechaAsc();
 
 	List<Reporte> findAllByOrderByFechaDesc();
+	
+	List<Reporte> obtenerReportesPorNivelDeGravedad(String nivel);
 
 }
