@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import cl.ubb.testing.safeit.dto.LoginDTO;
 import cl.ubb.testing.safeit.models.Usuario;
 import cl.ubb.testing.safeit.services.UsuarioService;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -54,9 +56,9 @@ public class UsuarioController {
 	
 	
 	@PostMapping("login")
-	public ResponseEntity<Usuario> login(@RequestParam("correo") String correo, @RequestParam("password") String pwd) {	
+	public ResponseEntity<Usuario> login(@RequestBody LoginDTO login) {	
 		try {
-			Usuario user = usuarioService.login(correo, pwd);
+			Usuario user = usuarioService.login(login.getEmail(), login.getPassword());
 			return new ResponseEntity<Usuario>(user, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<Usuario>(HttpStatus.UNAUTHORIZED);

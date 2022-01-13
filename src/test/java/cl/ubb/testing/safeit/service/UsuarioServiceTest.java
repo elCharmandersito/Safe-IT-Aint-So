@@ -84,6 +84,28 @@ public class UsuarioServiceTest {
 	}
 	
 	@Test
+	void siBuscaUsuarioPorCorreoYCorreoExisteRetornaUsuario() throws UsuarioErrorException {
+		// Arrange
+		Usuario usuario = UsuarioFixture.obtenerUsuario();
+		when(usuarioRepository.findByCorreo("correo@gmail.com")).thenReturn(usuario);
+		
+		Usuario resultado = usuarioService.findByCorreo("correo@gmail.com");
+		
+		// Assert
+		assertNotNull(resultado);
+		assertEquals(usuario.getCorreo(), resultado.getCorreo());
+	}
+	
+	@Test
+	void siBuscaUsuarioPorCorreoYNoExisteElCorreoLanzaEmailNotFoundException() throws UsuarioErrorException {
+		// Arrange
+		when(usuarioRepository.findByCorreo("igorella@alumnos.ubiobio.cl")).thenReturn(null);
+		
+		// Act + Assert
+        assertThrows(EmailNotFoundException.class, () -> usuarioService.login("igorella@alumnos.ubiobio.cl", "1234"));
+	}
+	
+	@Test
 	void siIniciaSesionConContrasenaErroneaLanzaWrongPasswordException() throws UsuarioErrorException {
 		// Arrange
 		Usuario usuario = new Usuario();

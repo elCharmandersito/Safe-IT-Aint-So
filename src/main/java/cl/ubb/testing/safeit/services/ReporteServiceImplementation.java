@@ -101,18 +101,14 @@ public class ReporteServiceImplementation implements ReporteService{
 	public List<Reporte> findByTipo(String tipo) {
 		if(tipo.equalsIgnoreCase("INCENDIO")) {
 			return repo.findByReportesPorTipo(0);
-		}else{
-			if(tipo.equalsIgnoreCase("CRIMEN")){
-				return repo.findByReportesPorTipo(1);
-			}else {
-				if(tipo.equalsIgnoreCase("ACCIDENTE")) {
-					return repo.findByReportesPorTipo(2);
-				}else {
-					if(tipo.equalsIgnoreCase("AVISO")) {
-						return repo.findByReportesPorTipo(3);
-					}
-				}
-			}
+		} else if (tipo.equalsIgnoreCase("CRIMEN")) {
+			return repo.findByReportesPorTipo(1);
+		} else if(tipo.equalsIgnoreCase("ACCIDENTE")) {
+			return repo.findByReportesPorTipo(2);
+		} else if(tipo.equalsIgnoreCase("AVISO")) {		
+			return repo.findByReportesPorTipo(3);
+		} else if (tipo.equalsIgnoreCase("DENUNCIA")) {
+			return repo.findByReportesPorTipo(4);
 		}
 		return null;
 	}

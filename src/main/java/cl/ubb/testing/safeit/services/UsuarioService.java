@@ -25,5 +25,7 @@ public interface UsuarioService {
 
 	Usuario merge(Usuario usuario)throws UsuarioErrorException;
 
+	Usuario findByCorreo(String correo) throws UsuarioErrorException;
+
 
 }
