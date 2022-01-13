@@ -18,8 +18,6 @@ public interface ReporteService {
 	List<Reporte> findAllByFechaBetween(Date fecha, Date fecha2);
 
 	List<Reporte> findByNombre(String nombre);
-
-	void deleteById(int id);
 	
 	boolean existsById(int id);
 
@@ -32,5 +30,7 @@ public interface ReporteService {
 	List<Reporte> obtenerReportesPorNivelDeGravedad(String nivel);
 	
 	List<Reporte> findByTipo(String tipo);
+
+	void delete(Reporte reporte);
 
 }

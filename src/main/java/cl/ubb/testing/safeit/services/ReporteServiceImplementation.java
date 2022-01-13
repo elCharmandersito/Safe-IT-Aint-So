@@ -41,10 +41,6 @@ public class ReporteServiceImplementation implements ReporteService{
 		return repo.findAll();
 	}
 
-	public void deleteById(int id) {
-		repo.deleteById(id);
-		
-	}
 
 	public Reporte update(Reporte reporte) {
 		return repo.saveAndFlush(reporte);
@@ -115,6 +111,11 @@ public class ReporteServiceImplementation implements ReporteService{
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void delete(Reporte reporte) {
+		repo.delete(reporte);
 	}
 
 }

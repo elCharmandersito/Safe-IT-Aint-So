@@ -104,10 +104,19 @@ public class ReporteController {
 		}             
 	}
 	
+	
+	
 	@DeleteMapping(value = "/reportes/eliminar/{id}")     
 	public ResponseEntity<Reporte> deleteReporte(@PathVariable("id") int id){        
-		reporteService.deleteById(id);
-		return new ResponseEntity<>(HttpStatus.OK);                     
+		try {
+			Reporte reporte = reporteService.findById(id);
+			reporte.setIdReporte(id);
+			reporteService.delete(reporte);
+			return new ResponseEntity<>(HttpStatus.OK);    
+		} catch (Exception e) {             
+			e.printStackTrace(); 
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}     
 	}
 	
 	@GetMapping(value = "/reportes/fecha/{fecha}/{fecha2}", produces ="application/json")
