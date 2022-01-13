@@ -37,7 +37,7 @@ public class ReporteStepDefs {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    private String getEndPoint(){ return "http://localhost:"+port+"/safeit/reportes/";}
+    private String getEndPoint(){ return "http://localhost:"+port+"/safeit/reportes";}
 
     @Given("reporte con id {int}, nombre {string},descripcion {string}, nivelGravedad {int}")
     public void reporte_con_id_nombre_descripcion_nivel_gravedad(Integer id, String nombre, String descripcion, Integer nivelGravedad) throws ReporteErrorException {
@@ -98,7 +98,7 @@ public class ReporteStepDefs {
         Reporte reporte= reporteResponseEntity.getBody();
         assertNotNull(reporte);
         assertEquals(nombre, reporte.getNombre());
-    }
+    }*/
 
     @When("solicito un reporte con descripcion {string}")
     public void solicito_reporte_con_descripcion(String descripcion){
@@ -107,7 +107,7 @@ public class ReporteStepDefs {
         HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
 
         testRestTemplate= new TestRestTemplate();
-        reporteResponseEntity = testRestTemplate.exchange(getEndPoint()+descripcion, HttpMethod.GET, requestEntity, Reporte.class);
+        reporteResponseEntity = testRestTemplate.exchange(getEndPoint()+"/descripcion/"+descripcion, HttpMethod.GET, requestEntity, Reporte.class);
     }
     @Then("obtengo status{string} y un reporte con descripcion{string}")
     public void obtengo_status_y_reporte_con_descripcion(String estado, String descripcion){
@@ -116,5 +116,5 @@ public class ReporteStepDefs {
         Reporte reporte= reporteResponseEntity.getBody();
         assertNotNull(reporte);
         assertEquals(descripcion, reporte.getDescripcion());
-    }*/
+    }
 }
