@@ -60,6 +60,15 @@ public class UsuarioServiceImplementation implements UsuarioService {
 		return repo.findById(id);
 	}
 	
+	@Override
+	public Usuario findByCorreo(String correo) throws UsuarioErrorException {
+		try {
+			return repo.findByCorreo(correo);
+		} catch (UsuarioErrorException e) {
+			throw new UsuarioErrorException();
+		}
+	}
+	
 	public List<Usuario> getApellido(String apellido) {
 		return repo.findByApellidoPaterno(apellido);
 	}

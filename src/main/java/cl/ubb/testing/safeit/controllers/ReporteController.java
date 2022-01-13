@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.ubb.testing.safeit.exceptions.UsuarioErrorException;
 import cl.ubb.testing.safeit.models.EmailBody;
 import cl.ubb.testing.safeit.models.Reporte;
 import cl.ubb.testing.safeit.models.Usuario;
@@ -126,12 +129,13 @@ public class ReporteController {
 			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
 		}
 		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
-
 	}
 	
 	@GetMapping(value = "/reportes/nombre/{nombre}", produces ="application/json")
 	public ResponseEntity<List<Reporte>> findReportesByNombre( @PathVariable("nombre") String nombre) {
 		List<Reporte> reportes = reporteService.findByNombre(nombre);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		System.out.println(auth.getName());
 		if (!reportes.isEmpty()) {
 			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
 		}
@@ -180,6 +184,17 @@ public class ReporteController {
 		List<Reporte> reportes = reporteService.findByTipo(tipo.toUpperCase());
 		if (!reportes.isEmpty()) {
 			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
+		}
+		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
+	}
+	
+	@GetMapping(value = "/reportes/me", produces ="application/json")
+	public ResponseEntity<List<Reporte>> findReportesByNombre() throws UsuarioErrorException {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Usuario user = usuarioService.findByCorreo(auth.getName());
+		System.out.println(user.getReportes().size());
+		if (user != null) {
+			return new ResponseEntity<List<Reporte>>(user.getReportes(), HttpStatus.OK);
 		}
 		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
 	}
