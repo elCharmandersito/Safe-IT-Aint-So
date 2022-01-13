@@ -107,6 +107,8 @@ public class ReporteController {
 		}             
 	}
 	
+	
+	
 	@DeleteMapping(value = "/reportes/eliminar/{id}")     
 	public ResponseEntity<Reporte> deleteReporte(@PathVariable("id") int id){        
 		try {
@@ -122,7 +124,8 @@ public class ReporteController {
 		} catch (Exception e) {             
 			e.printStackTrace(); 
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-}              
+		}     
+
 	}
 	
 	@GetMapping(value = "/reportes/fecha/{fecha}/{fecha2}", produces ="application/json")
@@ -210,6 +213,9 @@ public class ReporteController {
         }
         return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
     }
+
+
+
 
 }
 
