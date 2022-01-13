@@ -33,4 +33,6 @@ public interface ReporteService {
 
 	void delete(Reporte reporte);
 
+	List<Reporte> findByReporteOrdenDeGravedad();
+
 }
