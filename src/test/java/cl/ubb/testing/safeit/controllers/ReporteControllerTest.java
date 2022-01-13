@@ -461,7 +461,7 @@ private MockMvc mockMvc;
 		given(reporteService.obtenerReportesPorNivelDeGravedad("MEDIA")).willReturn(new ArrayList<>());
 		
 		//When
-		MockHttpServletResponse response = mockMvc.perform(get("/reportes/nivelDeGravedad/MEDIA")
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/nivelDeGravedad/media")
 		        .contentType(MediaType.APPLICATION_JSON))
 				.andReturn()
 				.getResponse();
@@ -469,6 +469,40 @@ private MockMvc mockMvc;
 		//Then
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());	
 		
+		
+	}
+	
+	@Test
+	void siBuscoReportesPorTipoDeReporteYExistenReportesDeEseTipoDebeRetornarUnaListaDeReportesYStatusOK() throws Exception {
+		//Given
+		List<Reporte> reportes= ReporteFixture.obtenerReportesNivelDeGravedadFixture();
+		given(reporteService.findByTipo("AVISO")).willReturn(reportes);
+				
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/tipoReporte/Aviso")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+				
+		//Then
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(jsonListReportes.write(reportes).getJson(), response.getContentAsString());
+		
+	}
+	
+	@Test
+	void siBuscoReportesPorTipoDeReporteYNoExistenReportesDeEseTipoDebeRetornarUnaListaVaciaYStatusNotFound() throws Exception {
+		//Given
+		given(reporteService.findByTipo("AVISO")).willReturn(new ArrayList<>());
+				
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/tipoReporte/Aviso")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+				
+		//Then
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());	
 		
 	}
 

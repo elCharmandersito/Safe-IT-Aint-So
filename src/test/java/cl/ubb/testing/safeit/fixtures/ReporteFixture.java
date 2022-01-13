@@ -8,6 +8,7 @@ import java.util.List;
 
 import cl.ubb.testing.safeit.models.NivelGravedad;
 import cl.ubb.testing.safeit.models.Reporte;
+import cl.ubb.testing.safeit.models.TipoReporte;
 
 public class ReporteFixture {
 	
@@ -104,6 +105,7 @@ public static List<Reporte> obtenerReportesNivelDeGravedadFixture(){
 			
 		}
 		reporte.setNivelGravedad(NivelGravedad.MEDIA);
+		reporte.setTipoReporte(TipoReporte.AVISO);
 		 
 		
 		Reporte reporte2 = new Reporte();
@@ -112,6 +114,7 @@ public static List<Reporte> obtenerReportesNivelDeGravedadFixture(){
 		reporte2.setDescripcion("Se encontraron rayones en las bancas de la plaza");
 		reporte2.setFecha(date);
 		reporte2.setNivelGravedad(NivelGravedad.MEDIA);
+		reporte2.setTipoReporte(TipoReporte.AVISO);
 		
 		reportes.add(reporte);
 		reportes.add(reporte2);

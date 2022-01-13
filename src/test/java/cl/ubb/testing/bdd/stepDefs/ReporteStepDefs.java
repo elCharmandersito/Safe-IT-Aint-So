@@ -1,4 +1,4 @@
-package bdd.stepDefs;
+package cl.ubb.testing.bdd.stepDefs;
 
 import cl.ubb.testing.safeit.models.NivelGravedad;
 import cl.ubb.testing.safeit.models.Reporte;

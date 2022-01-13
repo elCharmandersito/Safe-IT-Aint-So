@@ -1,4 +1,4 @@
-package bdd;
+package cl.ubb.testing.bdd;
 
 import cl.ubb.testing.safeit.SafeItApplication;
 import io.cucumber.spring.CucumberContextConfiguration;

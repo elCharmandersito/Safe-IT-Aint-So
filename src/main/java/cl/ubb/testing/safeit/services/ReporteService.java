@@ -30,5 +30,7 @@ public interface ReporteService {
 	List<Reporte> findAllByOrderByFechaDesc();
 	
 	List<Reporte> obtenerReportesPorNivelDeGravedad(String nivel);
+	
+	List<Reporte> findByTipo(String tipo);
 
 }

@@ -21,6 +21,8 @@ public class Reporte {
 	private String nombre;
 	private Date fecha;
 	private String descripcion;
+	private TipoReporte tipoReporte;
+
 	private NivelGravedad nivelGravedad;
 	
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -31,19 +33,22 @@ public class Reporte {
 	
 	@OneToMany(mappedBy = "reporte")
 	private List<Correccion> correcciones;
-
-	public Reporte(int idReporte, String nombre, Date fecha, String descripcion, NivelGravedad nivelGravedad,
-			Usuario usuario, List<Emisor> emisor) {
+	
+	
+	public Reporte(int idReporte, String nombre, Date fecha, String descripcion, TipoReporte tipoReporte,
+			NivelGravedad nivelGravedad, Usuario usuario, List<Emisor> emisor, List<Correccion> correcciones) {
 		super();
 		this.idReporte = idReporte;
 		this.nombre = nombre;
 		this.fecha = fecha;
 		this.descripcion = descripcion;
+		this.tipoReporte = tipoReporte;
 		this.nivelGravedad = nivelGravedad;
 		this.usuario = usuario;
 		this.emisor = emisor;
+		this.correcciones = correcciones;
 	}
-	
+
 	public Reporte() {
 		
 	}
@@ -110,6 +115,14 @@ public class Reporte {
 	
 	public void setCorrecciones(List<Correccion> correcciones) {
 		this.correcciones = correcciones;
+	}
+	
+	public TipoReporte getTipoReporte() {
+		return tipoReporte;
+	}
+
+	public void setTipoReporte(TipoReporte tipoReporte) {
+		this.tipoReporte = tipoReporte;
 	}
 
 }

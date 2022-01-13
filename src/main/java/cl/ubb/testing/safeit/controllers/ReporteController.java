@@ -164,7 +164,16 @@ public class ReporteController {
 	
 	@GetMapping(value = "/reportes/nivelDeGravedad/{nivel}", produces ="application/json")
 	public ResponseEntity<List<Reporte>> findReportesNivelGravedad( @PathVariable("nivel") String nivel) {
-		List<Reporte> reportes = reporteService.obtenerReportesPorNivelDeGravedad(nivel);
+		List<Reporte> reportes = reporteService.obtenerReportesPorNivelDeGravedad(nivel.toUpperCase());
+		if (!reportes.isEmpty()) {
+			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
+		}
+		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
+	}
+	
+	@GetMapping(value = "/reportes/tipoReporte/{tipo}", produces ="application/json")
+	public ResponseEntity<List<Reporte>> findReportesTipo( @PathVariable("tipo") String tipo) {
+		List<Reporte> reportes = reporteService.findByTipo(tipo.toUpperCase());
 		if (!reportes.isEmpty()) {
 			return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
 		}
