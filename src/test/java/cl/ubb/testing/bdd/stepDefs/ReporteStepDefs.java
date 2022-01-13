@@ -1,5 +1,6 @@
 package cl.ubb.testing.bdd.stepDefs;
 
+import cl.ubb.testing.safeit.exceptions.ReporteErrorException;
 import cl.ubb.testing.safeit.models.NivelGravedad;
 import cl.ubb.testing.safeit.models.Reporte;
 import cl.ubb.testing.safeit.repositories.ReporteRepository;
@@ -36,8 +37,38 @@ public class ReporteStepDefs {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    private String getEndPoint(){ return "http://localhost:"+port+"/safeit/reporte/";}
+    private String getEndPoint(){ return "http://localhost:"+port+"/safeit/reportes/";}
 
+    @Given("reporte con id {int}, nombre {string},descripcion {string}, nivelGravedad {int}")
+    public void reporte_con_id_nombre_descripcion_nivel_gravedad(Integer id, String nombre, String descripcion, Integer nivelGravedad) throws ReporteErrorException {
+        Reporte reporte = new Reporte();
+        reporte.setIdReporte(id);
+        reporte.setNombre(nombre);
+        reporte.setDescripcion(descripcion);
+        reporte.setNivelGravedad(NivelGravedad.BAJA);
+        reporteService.save(reporte);
+    }
+    @When("solicito reporte con nombre {string}")
+    public void solicito_reporte_con_nombre(String nombre) {
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.CONTENT_TYPE,APPLICATION_JSON_VALUE);
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
+
+        reporteResponseEntity = testRestTemplate.exchange(getEndPoint()+"/nombre/"+nombre, HttpMethod.GET, requestEntity, Reporte.class);
+    }
+
+    @Then("obtengo status {string} y un reporte con nombre {string}")
+    public void obtengo_status_y_un_reporte_con_nombre(String estado, String nombre) {
+
+        assertEquals(estado.toUpperCase(), reporteResponseEntity.getStatusCode().name());
+
+        Reporte reporte= reporteResponseEntity.getBody();
+        assertNotNull(reporte);
+        assertEquals(nombre, reporte.getNombre());
+    }
+
+    /*
     @Given("reporte con id {int},nombre {string}, fecha{string}, descripcion{string}, nivelGravedad{int}")
     public void reporte_con_id_nombre_fecha_descripcion_nivelgravedad(
             Integer id, String nombre, Date fecha, String descripcion, NivelGravedad nivelGravedad
@@ -85,5 +116,5 @@ public class ReporteStepDefs {
         Reporte reporte= reporteResponseEntity.getBody();
         assertNotNull(reporte);
         assertEquals(descripcion, reporte.getDescripcion());
-    }
+    }*/
 }

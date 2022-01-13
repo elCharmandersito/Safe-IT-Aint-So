@@ -1,7 +1,7 @@
 Feature: Servicios de reporte
 
   Scenario: Buscar un reporte por su nombre
-    Given reporte con id 1, nombre "basura", fecha "2020-12-21 21:00:00",descripcion "hay mucha basura en la plaza", nivelGravedad 0
+    Given reporte con id 1, nombre "basura",descripcion "hay mucha basura en la plaza", nivelGravedad 0
     When solicito reporte con nombre "basura"
     Then obtengo status "ok" y un reporte con nombre "basura"
 
