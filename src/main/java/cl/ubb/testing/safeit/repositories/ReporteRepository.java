@@ -29,5 +29,8 @@ public interface ReporteRepository extends JpaRepository<Reporte, Integer>{
 
 	@Query(value="SELECT * FROM reporte WHERE reporte.tipo_reporte=:i", nativeQuery=true)
 	List<Reporte> findByReportesPorTipo(int i);
+	
+	@Query(value="Select * from reporte ORDER BY reporte.nivel_gravedad DESC", nativeQuery=true)
+    List<Reporte> findByReporteOrdenDeGravedad();
 
 }

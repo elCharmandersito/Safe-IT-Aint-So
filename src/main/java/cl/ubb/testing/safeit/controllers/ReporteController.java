@@ -109,13 +109,20 @@ public class ReporteController {
 	
 	@DeleteMapping(value = "/reportes/eliminar/{id}")     
 	public ResponseEntity<Reporte> deleteReporte(@PathVariable("id") int id){        
-		reporteService.deleteById((int) id);
-		boolean seBorro = reporteService.existsById(id);
-		if (!seBorro) {
-			return new ResponseEntity<>(HttpStatus.OK);  
-		}else {
+		try {
+			Reporte reporte = reporteService.findById(id);
+			Usuario usuario = reporte.getUsuario();
+			List<Reporte> reportes = usuario.getReportes();
+			reportes.remove(reporte);
+			usuario.setReportes(reportes);
+			usuarioService.saveOrPersist(usuario);
+			reporte.setIdReporte(id);
+			reporteService.delete(reporte);
+			return new ResponseEntity<>(HttpStatus.OK);    
+		} catch (Exception e) {             
+			e.printStackTrace(); 
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}                    
+}              
 	}
 	
 	@GetMapping(value = "/reportes/fecha/{fecha}/{fecha2}", produces ="application/json")
@@ -189,11 +196,20 @@ public class ReporteController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Usuario user = usuarioService.findByCorreo(auth.getName());
 		System.out.println(user.getReportes().size());
-		if (user != null) {
+		if (user.getReportes() != null && user.getReportes().size() != 0) {
 			return new ResponseEntity<List<Reporte>>(user.getReportes(), HttpStatus.OK);
 		}
-		return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<List<Reporte>>(new ArrayList<Reporte>(), HttpStatus.NOT_FOUND);
 	}
+	
+	@GetMapping(value = "/reportes/gravedad", produces ="application/json")
+    public ResponseEntity<List<Reporte>> findReportesPorGravedad() {
+        List<Reporte> reportes = reporteService.findByReporteOrdenDeGravedad();
+        if (!reportes.isEmpty()) {
+            return new ResponseEntity<List<Reporte>>(reportes, HttpStatus.OK);
+        }
+        return new ResponseEntity<List<Reporte>>(HttpStatus.NOT_FOUND);
+    }
 
 }
 

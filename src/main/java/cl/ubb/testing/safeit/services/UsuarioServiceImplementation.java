@@ -36,6 +36,11 @@ public class UsuarioServiceImplementation implements UsuarioService {
 		}
 		throw new UsuarioErrorException();
 	}
+	
+	@Override
+	public Usuario saveOrPersist(Usuario usuario) {
+		return repo.saveAndFlush(usuario);
+	}
 
 	public Usuario merge(Usuario usuario) throws UsuarioErrorException {
 		if (findById(usuario.getIdUsuario()) != null) {

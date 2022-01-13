@@ -33,4 +33,8 @@ public interface ReporteService {
 	
 	List<Reporte> findByTipo(String tipo);
 
+	void delete(Reporte reporte);
+	
+	List<Reporte> findByReporteOrdenDeGravedad();
+
 }

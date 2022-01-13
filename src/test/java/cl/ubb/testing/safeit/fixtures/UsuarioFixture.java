@@ -36,6 +36,7 @@ public class UsuarioFixture {
 		usuario.setApellidoMaterno("Cea");
 		usuario.setApellidoPaterno("Parra");
 		usuario.setNombre("Daniel");
+		usuario.setReportes(ReporteFixture.obtenerReportesFixture());
 		return usuario;
 	}
 	

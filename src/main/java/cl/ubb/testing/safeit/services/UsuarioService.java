@@ -27,5 +27,7 @@ public interface UsuarioService {
 
 	Usuario findByCorreo(String correo) throws UsuarioErrorException;
 
+	Usuario saveOrPersist(Usuario usuario);
+
 
 }

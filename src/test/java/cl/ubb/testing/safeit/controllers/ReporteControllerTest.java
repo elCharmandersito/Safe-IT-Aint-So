@@ -6,11 +6,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -22,6 +26,7 @@ import cl.ubb.testing.safeit.fixtures.UsuarioFixture;
 import cl.ubb.testing.safeit.models.Reporte;
 import cl.ubb.testing.safeit.models.Usuario;
 import cl.ubb.testing.safeit.services.ReporteServiceImplementation;
+import cl.ubb.testing.safeit.services.UsuarioServiceImplementation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.any;
@@ -47,6 +52,9 @@ private MockMvc mockMvc;
 	
 	@Mock
 	private ReporteServiceImplementation reporteService;
+	
+	@Mock
+	private UsuarioServiceImplementation usuarioService;
 	
 	@InjectMocks
 	private ReporteController reporteController;
@@ -505,5 +513,83 @@ private MockMvc mockMvc;
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());	
 		
 	}
+	
+	@Test
+	void siBuscoMisReportesYExistenReportesDebeRetornarLaListaDeReportesYStatusOk() throws Exception {
+		//Given
+		Usuario usuario = UsuarioFixture.obtenerUsuario();
+		Authentication authentication = Mockito.mock(Authentication.class);
+		SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		given(SecurityContextHolder.getContext().getAuthentication().getName()).willReturn(usuario.getCorreo());
+		given(usuarioService.findByCorreo(usuario.getCorreo())).willReturn(usuario);
+				
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/me")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+				
+		//Then
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(jsonListReportes.write(usuario.getReportes()).getJson(), response.getContentAsString());
+		
+	}
+	
+	@Test
+	void siBuscoMisReportesYNoExistenReportesDebeRetornarListaVaciaYStatusNotFound() throws Exception {
+		//Given
+		Usuario usuario = UsuarioFixture.obtenerUsuario();
+		usuario.setReportes(new ArrayList<Reporte>());
+		Authentication authentication = Mockito.mock(Authentication.class);
+		SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		given(SecurityContextHolder.getContext().getAuthentication().getName()).willReturn(usuario.getCorreo());
+		given(usuarioService.findByCorreo(usuario.getCorreo())).willReturn(usuario);
+				
+		//When
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/me")
+		        .contentType(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse();
+				
+		//Then
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+		assertEquals(jsonListReportes.write(usuario.getReportes()).getJson(), response.getContentAsString());
+		
+	}
+	
+	@Test 
+	void siInvocoReportesPorGravedadYExistenReportesDebeRetornarUnaListaDeReportesOrdenadaYStatusOk() throws Exception  { 
+		//Given 
+		List <Reporte> reportes = ReporteFixture.obtenerReportesOrdenadosFixture();         
+		given(reporteService.findByReporteOrdenDeGravedad()).willReturn(reportes);     
+		
+		//When         
+		MockHttpServletResponse response = mockMvc.perform(get("/reportes/gravedad")
+				.contentType(MediaType.APPLICATION_JSON))                 
+				.andReturn()                 
+				.getResponse();                  
+		//Then         
+		assertEquals(HttpStatus.OK.value(), response.getStatus());         
+		assertEquals(jsonListReportes.write(reportes).getJson(), response.getContentAsString());     		
+	}
+	
+	@Test
+    void siInvocoReportesPorGravedadYNoExistenReportesDebeRetornarUnaListaVaciaYStatusNotFound() throws Exception  {
+        //Given
+        given(reporteService.findByReporteOrdenDeGravedad()).willReturn(new ArrayList<>());
+
+        //When
+        MockHttpServletResponse response = mockMvc.perform(get("/reportes/gravedad")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
+
+        //Then
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+    }
 
 }

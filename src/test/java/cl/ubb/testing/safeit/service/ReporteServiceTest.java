@@ -452,4 +452,35 @@ public class ReporteServiceTest {
 
 	}
 	
+	@Test
+    void siInvocoOrdenarReportesPorGravedadYExistenReportesDevuelveUnaListaDeReportesOrdenada() {
+
+        // Arrange
+        List<Reporte> reportes, resultado;
+        reportes = ReporteFixture.obtenerReportesOrdenadosFixture();
+        when(reporteRepository.findByReporteOrdenDeGravedad()).thenReturn(reportes);
+
+        // Act
+        resultado = reporteService.findByReporteOrdenDeGravedad();
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals("Rayados en pared", resultado.get(0).getNombre());
+        assertEquals("Rayados en las bancas", resultado.get(1).getNombre());
+    }
+
+    @Test
+    void siInvocoOrdenarReportesPorGravedadYNoExistenReportesDevuelveUnaListaVacia() {
+        // Arrange
+        List<Reporte> resultado;
+        when(reporteRepository.findByReporteOrdenDeGravedad()).thenReturn(new ArrayList<>());
+
+        // Act
+        resultado = reporteService.findByReporteOrdenDeGravedad();
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(0, resultado.size());
+    }
+	
 }

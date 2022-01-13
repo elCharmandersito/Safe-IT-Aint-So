@@ -28,9 +28,10 @@ public class Reporte {
 	private NivelGravedad nivelGravedad;
 	
 	@JsonIgnore
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Usuario usuario;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "reporte")
 	private List<Emisor> emisor;
 	

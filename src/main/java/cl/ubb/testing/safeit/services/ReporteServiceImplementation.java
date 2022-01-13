@@ -112,5 +112,14 @@ public class ReporteServiceImplementation implements ReporteService{
 		}
 		return null;
 	}
+	
+	public void delete(Reporte reporte) {
+		repo.delete(reporte);
+	}
+	
+	@Override
+    public List<Reporte> findByReporteOrdenDeGravedad() {
+        return repo.findByReporteOrdenDeGravedad();
+    }
 
 }
